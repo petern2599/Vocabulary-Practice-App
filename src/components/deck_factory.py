@@ -48,8 +48,3 @@ class DeckFactory:
     def set_amount(self,amount):
         self.amount = int(amount)
 
-if __name__ == "__main__":
-    deck_factory = DeckFactory()
-    deck_factory.set_amount("10")
-    deck_factory.read_spreadsheet("C:/Users/peter/Japanese_Vocab_App/test_sheet.csv")
-    deck_factory.create_vocab_deck()

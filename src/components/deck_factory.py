@@ -1,4 +1,4 @@
-from vocab_card import VocabCard
+from components.vocab_card import VocabCard
 import pandas
 import numpy as np
 

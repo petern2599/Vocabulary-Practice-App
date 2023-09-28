@@ -69,7 +69,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="main_text_label">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -109,7 +109,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_3">
+        <widget class="QLabel" name="sub_text_label">
          <property name="minimumSize">
           <size>
            <width>200</width>
@@ -141,6 +141,71 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QLabel" name="counter_text_label">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Counter</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QProgressBar" name="progressBar">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QProgressBar::chunk {
+	
+	background-color: rgb(0, 170, 255);
+}</string>
+         </property>
+         <property name="value">
+          <number>12</number>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="invertedAppearance">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -169,7 +234,7 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="correct_button">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -184,7 +249,7 @@
          <property name="styleSheet">
           <string notr="true">QPushButton{
 	border-radius: 8px;
-	background: rgb(0, 131, 0)
+	background: rgb(85, 170, 255)
 }
 
 QPushButton:hover{
@@ -192,7 +257,7 @@ QPushButton:hover{
 }
 
 QPushButton:pressed{
-	background:rgb(0, 216, 0)
+	background: rgb(0, 144, 0)
 }</string>
          </property>
          <property name="text">
@@ -201,7 +266,7 @@ QPushButton:pressed{
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="incorrect_button">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -216,7 +281,7 @@ QPushButton:pressed{
          <property name="styleSheet">
           <string notr="true">QPushButton{
 	border-radius: 8px;
-	background: rgb(195, 0, 0)
+	background: rgb(85, 170, 255)
 }
 
 QPushButton:hover{
@@ -224,7 +289,7 @@ QPushButton:hover{
 }
 
 QPushButton:pressed{
-	background: rgb(255, 0, 0)
+	background: rgb(188, 0, 0)
 }</string>
          </property>
          <property name="text">
@@ -247,7 +312,48 @@ QPushButton:pressed{
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuActions">
+    <property name="title">
+     <string>Actions</string>
+    </property>
+    <addaction name="actionAdd_Spreadsheet"/>
+    <addaction name="actionStart"/>
+   </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionSet_Amount"/>
+    <addaction name="actionSet_Mode"/>
+   </widget>
+   <addaction name="menuActions"/>
+   <addaction name="menuSettings"/>
   </widget>
+  <action name="actionasd">
+   <property name="text">
+    <string>asd</string>
+   </property>
+  </action>
+  <action name="actionAdd_Spreadsheet">
+   <property name="text">
+    <string>Add Spreadsheet</string>
+   </property>
+  </action>
+  <action name="actionStart">
+   <property name="text">
+    <string>Start</string>
+   </property>
+  </action>
+  <action name="actionSet_Amount">
+   <property name="text">
+    <string>Set Amount</string>
+   </property>
+  </action>
+  <action name="actionSet_Mode">
+   <property name="text">
+    <string>Set Mode</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

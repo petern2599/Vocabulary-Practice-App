@@ -386,8 +386,17 @@ QPushButton:pressed{
     <property name="title">
      <string>Actions</string>
     </property>
+    <widget class="QMenu" name="menuView_Progress_Charts">
+     <property name="title">
+      <string>View Progress Charts</string>
+     </property>
+     <addaction name="actionToday_s_Stats"/>
+     <addaction name="actionWeek_s_Stats"/>
+     <addaction name="actionMonth_s_Stats"/>
+    </widget>
     <addaction name="actionAdd_Spreadsheet"/>
     <addaction name="actionStart"/>
+    <addaction name="menuView_Progress_Charts"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
@@ -422,6 +431,21 @@ QPushButton:pressed{
   <action name="actionSet_Mode">
    <property name="text">
     <string>Set Mode</string>
+   </property>
+  </action>
+  <action name="actionToday_s_Stats">
+   <property name="text">
+    <string>Today's Stats</string>
+   </property>
+  </action>
+  <action name="actionWeek_s_Stats">
+   <property name="text">
+    <string>Week's Stats</string>
+   </property>
+  </action>
+  <action name="actionMonth_s_Stats">
+   <property name="text">
+    <string>Month's Stats</string>
    </property>
   </action>
  </widget>

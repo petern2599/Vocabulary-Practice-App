@@ -3,7 +3,7 @@ from PyQt5 import uic
 from components.deck_factory import DeckFactory
 from components.vocab_card import VocabCard
 from components.json_logger import JSONLogger
-from components.progression_chart import ProgressionChartUI
+from components.progression_chart import ProgressionChart
 
 class VocabularyPracticeApp(QMainWindow):
     def __init__(self):
@@ -12,6 +12,7 @@ class VocabularyPracticeApp(QMainWindow):
         self.show()
         self.ui_setup()
         self.deck_factory = DeckFactory()
+        self.progress_charts = ProgressionChart()
         self.set_default_settings()
 
         self.json_logger = JSONLogger()
@@ -21,6 +22,7 @@ class VocabularyPracticeApp(QMainWindow):
         self.actionStart.triggered.connect(self.start_pressed)
         self.actionSet_Amount.triggered.connect(self.set_amount_pressed)
         self.actionSet_Mode.triggered.connect(self.set_mode_pressed)
+        self.actionToday_s_Stats.triggered.connect(self.today_stats_pressed)
         self.correct_button.clicked.connect(self.correct_button_pressed)
         self.incorrect_button.clicked.connect(self.incorrect_button_pressed)
         self.show_button.clicked.connect(self.show_button_pressed)
@@ -76,6 +78,9 @@ class VocabularyPracticeApp(QMainWindow):
         practice_mode,ok = QInputDialog.getItem(self, 'Set Practice Mode', 'Select Practice Mode:',practice_modes,0,False)
         if ok and practice_mode:
             self.practice_mode = practice_mode
+
+    def today_stats_pressed(self):
+        self.progress_charts.generate_today_stats()
 
     def display_card(self):
         self.card = self.vocab_deck.pop()
@@ -160,10 +165,6 @@ class VocabularyPracticeApp(QMainWindow):
     def create_log(self):
         self.json_logger.append_daily_stats(self.correct,self.incorrect)
 
-    def display_progression_chart(self):
-        self.progression_window = ProgressionChartUI(self)
-        self.progression_window.setWindowTitle('Progression Chart')
-        self.progression_window.show()
 
 def main():
     app = QApplication([])

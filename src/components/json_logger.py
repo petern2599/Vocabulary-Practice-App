@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import date,timedelta
+from datetime import date
 
 class JSONLogger():
     def __init__(self):
@@ -31,7 +31,7 @@ class JSONLogger():
 
     def check_current_month_log_folder_exists(self,path):
         month_year = date.today().strftime("%m-%y")
-        new_path = path + "\{}".format(month_year)
+        new_path = path + "\{}.json".format(month_year)
         if os.path.exists(new_path):
             return new_path
         else:

@@ -12,15 +12,16 @@ class ProgressionChartUI(QMainWindow):
         #initialize UI
         super(ProgressionChartUI,self).__init__()
         uic.loadUi("src/assets/progression_chart.ui",self)
-        self.show()
+        self.mpl_widget.set_size(left=.12,bottom=.12,width=.72,height=.72)
         self.update_graph()
+        self.show()
         
     def update_graph(self):
         self.stat_percent_label.setText("80%")
         labels = ['Correct','Incorrect']
         colors = ['limegreen','red']
-        sizes = [80,20]
-        self.mpl_widget.ax.pie(sizes, wedgeprops=dict(width=0.5),colors=colors,labels=labels)
+        sizes = [60,40]
+        self.mpl_widget.ax.pie(sizes, wedgeprops=dict(width=0.5),startangle=90,colors=colors,labels=labels,textprops={'fontsize': 8})
         self.mpl_widget.canvas.draw()
         
 

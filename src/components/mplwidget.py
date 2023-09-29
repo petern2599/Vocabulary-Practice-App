@@ -13,11 +13,14 @@ class MplWidget(QWidget):
         QWidget.__init__(self,parent)
         self.fig = Figure()
         self.ax = self.fig.add_axes([0,0,1,1])
-        self.ax.axis('equal')
         self.canvas = FigureCanvas(self.fig)
         vertical_layout = QVBoxLayout()
         vertical_layout.addWidget(self.canvas)
         self.setLayout(vertical_layout)
+
+    def set_size(self,left,bottom,width,height):
+        self.ax = self.fig.add_axes([left,bottom,width,height])
+        self.canvas = FigureCanvas(self.fig)
 
         
     

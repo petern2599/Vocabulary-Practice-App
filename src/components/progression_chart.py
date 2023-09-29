@@ -79,7 +79,7 @@ class ProgressionChart:
             plt.title("Current Week's Stats",fontweight="bold")
             plt.show()
         else:
-            bar_width = 0.25
+            bar_width = 0.40
             plt.figure(num="Week's Stats Progression Chart")
             bar_correct = np.arange(len(correct_stats_array))
             bar_incorrect = [x + bar_width for x in bar_correct]
@@ -101,8 +101,11 @@ class ProgressionChart:
             
             for weekday_index in range(len(correct_stats_array)):
                 max_value = max(correct_stats_array[weekday_index],incorrect_stats_array[weekday_index])
-                plt.text(weekday_index+.1,max_value+2,"PA: {}".format(practice_amount_stats_array[weekday_index])
+                plt.text(weekday_index+.1,max_value+5,"PA: {}".format(practice_amount_stats_array[weekday_index])
                         ,horizontalalignment='center')
+                
+                plt.text(weekday_index-0.12,correct_stats_array[weekday_index]+0.1,"{}".format(correct_stats_array[weekday_index]),fontsize=10)
+                plt.text(weekday_index+0.27,incorrect_stats_array[weekday_index]+0.1,"{}".format(incorrect_stats_array[weekday_index]),fontsize=10)
                 
             plt.plot([], [], ' ', label="PA -> Practice Amount")
             plt.legend()
@@ -140,4 +143,4 @@ class ProgressionChart:
 
 if __name__ == "__main__":
     pc = ProgressionChart("hi")
-    pc.generate_week_stats(True)
+    pc.generate_week_stats(False)

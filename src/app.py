@@ -12,7 +12,7 @@ class VocabularyPracticeApp(QMainWindow):
         self.show()
         self.ui_setup()
         self.deck_factory = DeckFactory()
-        self.progress_charts = ProgressionChart()
+        self.progress_charts = ProgressionChart(self)
         self.set_default_settings()
 
         self.json_logger = JSONLogger()
@@ -37,10 +37,7 @@ class VocabularyPracticeApp(QMainWindow):
             self.deck_factory.read_spreadsheet(spreadsheet_path[0])
 
         except FileNotFoundError:
-            message = QMessageBox()
-            message.setText("No file was selected...")
-            message.setWindowTitle('Message')
-            message.exec_()
+            self.generate_msg("No file was selected...",1)
         
     def disable_buttons(self):
         self.show_button.setEnabled(False)
@@ -136,10 +133,7 @@ class VocabularyPracticeApp(QMainWindow):
             self.display_card()
         else:
             self.create_log()
-            message = QMessageBox()
-            message.setText("No more cards in deck, logging stats...")
-            message.setWindowTitle('Message')
-            message.exec_()
+            self.generate_msg("No more cards in deck, logging stats...",0)
 
     def incorrect_button_pressed(self):
         self.incorrect += 1
@@ -147,10 +141,7 @@ class VocabularyPracticeApp(QMainWindow):
             self.display_card()
         else:
             self.create_log()
-            message = QMessageBox()
-            message.setText("No more cards in deck, logging stats...")
-            message.setWindowTitle('Message')
-            message.exec_()
+            self.generate_msg("No more cards in deck, logging stats...",0)
 
     def show_button_pressed(self):
         if self.show_button_toggle == 0:
@@ -165,6 +156,14 @@ class VocabularyPracticeApp(QMainWindow):
     def create_log(self):
         self.json_logger.append_daily_stats(self.correct,self.incorrect)
 
+    def generate_msg(self,msg,is_error):
+        message = QMessageBox()
+        message.setText(msg)
+        if is_error:
+            message.setWindowTitle('Error Message')
+        else:
+            message.setWindowTitle('Message')
+        message.exec_()
 
 def main():
     app = QApplication([])

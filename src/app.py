@@ -3,6 +3,7 @@ from PyQt5 import uic
 from components.deck_factory import DeckFactory
 from components.vocab_card import VocabCard
 from components.json_logger import JSONLogger
+from components.progression_chart import ProgressionChartUI
 
 class VocabularyPracticeApp(QMainWindow):
     def __init__(self):
@@ -158,6 +159,11 @@ class VocabularyPracticeApp(QMainWindow):
 
     def create_log(self):
         self.json_logger.append_daily_stats(self.correct,self.incorrect)
+
+    def display_progression_chart(self):
+        self.progression_window = ProgressionChartUI(self)
+        self.progression_window.setWindowTitle('Progression Chart')
+        self.progression_window.show()
 
 def main():
     app = QApplication([])

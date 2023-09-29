@@ -23,6 +23,8 @@ class VocabularyPracticeApp(QMainWindow):
         self.actionSet_Amount.triggered.connect(self.set_amount_pressed)
         self.actionSet_Mode.triggered.connect(self.set_mode_pressed)
         self.actionToday_s_Stats.triggered.connect(self.today_stats_pressed)
+        self.actionBar_Chart.triggered.connect(self.week_stats_bar_pressed)
+        self.actionPercent_Chart.triggered.connect(self.week_stats_percent_pressed)
         self.correct_button.clicked.connect(self.correct_button_pressed)
         self.incorrect_button.clicked.connect(self.incorrect_button_pressed)
         self.show_button.clicked.connect(self.show_button_pressed)
@@ -78,6 +80,12 @@ class VocabularyPracticeApp(QMainWindow):
 
     def today_stats_pressed(self):
         self.progress_charts.generate_today_stats()
+
+    def week_stats_bar_pressed(self):
+        self.progress_charts.generate_week_stats(False)
+
+    def week_stats_percent_pressed(self):
+        self.progress_charts.generate_week_stats(True)
 
     def display_card(self):
         self.card = self.vocab_deck.pop()

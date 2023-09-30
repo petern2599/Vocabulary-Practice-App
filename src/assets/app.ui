@@ -397,9 +397,16 @@ QPushButton:pressed{
       <addaction name="actionBar_Chart"/>
       <addaction name="actionPercent_Chart"/>
      </widget>
+     <widget class="QMenu" name="menuMonth_s_Stats">
+      <property name="title">
+       <string>Month's Stats</string>
+      </property>
+      <addaction name="actionBar_Chart_2"/>
+      <addaction name="actionPercent_Chart_2"/>
+     </widget>
      <addaction name="actionToday_s_Stats"/>
      <addaction name="menuWeek_s_Stats"/>
-     <addaction name="actionMonth_s_Stats"/>
+     <addaction name="menuMonth_s_Stats"/>
     </widget>
     <addaction name="actionAdd_Spreadsheet"/>
     <addaction name="actionStart"/>
@@ -447,11 +454,6 @@ QPushButton:pressed{
     <string>Today's Stats</string>
    </property>
   </action>
-  <action name="actionMonth_s_Stats">
-   <property name="text">
-    <string>Month's Stats</string>
-   </property>
-  </action>
   <action name="actionBar_Chart">
    <property name="text">
     <string>Bar Chart</string>
@@ -465,6 +467,16 @@ QPushButton:pressed{
   <action name="actionUndo">
    <property name="text">
     <string>Undo</string>
+   </property>
+  </action>
+  <action name="actionBar_Chart_2">
+   <property name="text">
+    <string>Bar Chart</string>
+   </property>
+  </action>
+  <action name="actionPercent_Chart_2">
+   <property name="text">
+    <string>Percent Chart</string>
    </property>
   </action>
  </widget>

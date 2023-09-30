@@ -33,6 +33,7 @@ class VocabularyPracticeApp(QMainWindow):
     def set_default_settings(self):
         self.deck_factory.set_amount(10)
         self.practice_mode = "Practice Vocab"
+        self.is_done = False
 
     def add_spreadsheet_pressed(self):
         try:
@@ -63,6 +64,7 @@ class VocabularyPracticeApp(QMainWindow):
             self.correct = 0
             self.incorrect = 0
             self.deck_index = 0
+            self.is_done = False
             self.display_card()
 
     def undo_pressed(self):
@@ -170,20 +172,26 @@ class VocabularyPracticeApp(QMainWindow):
         self.correct += 1
         self.card.set_correct()
         self.deck_index += 1
-        if len(self.vocab_deck) != 0:
+        if self.deck_index < len(self.vocab_deck) and self.is_done == False:
             self.display_card()
+        elif self.is_done == True:
+            self.generate_msg("No more cards in deck...",0)
         else:
             self.create_log()
+            self.is_done = True
             self.generate_msg("No more cards in deck, logging stats...",0)
 
     def incorrect_button_pressed(self):
         self.incorrect += 1
         self.card.set_incorrect()
         self.deck_index += 1
-        if len(self.vocab_deck) != 0:
+        if self.deck_index < len(self.vocab_deck) and self.is_done == False:
             self.display_card()
+        elif self.is_done == True:
+            self.generate_msg("No more cards in deck...",0)
         else:
             self.create_log()
+            self.is_done = True
             self.generate_msg("No more cards in deck, logging stats...",0)
 
     def show_button_pressed(self):

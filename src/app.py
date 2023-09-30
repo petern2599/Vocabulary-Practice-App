@@ -20,6 +20,7 @@ class VocabularyPracticeApp(QMainWindow):
     def ui_setup(self):
         self.actionAdd_Spreadsheet.triggered.connect(self.add_spreadsheet_pressed)
         self.actionStart.triggered.connect(self.start_pressed)
+        self.actionUndo.triggered.connect(self.undo_pressed)
         self.actionSet_Amount.triggered.connect(self.set_amount_pressed)
         self.actionSet_Mode.triggered.connect(self.set_mode_pressed)
         self.actionToday_s_Stats.triggered.connect(self.today_stats_pressed)
@@ -62,7 +63,38 @@ class VocabularyPracticeApp(QMainWindow):
             self.counter = 0
             self.correct = 0
             self.incorrect = 0
+            self.deck_index = 0
             self.display_card()
+
+    def undo_pressed(self):
+        self.deck_index -= 1
+        if self.deck_index < 0:
+            self.deck_index = 0
+        self.card = self.vocab_deck[self.deck_index]
+
+        #Subtract by 2 because display_card() will add 1 to counter
+        self.counter -= 2
+        if self.counter < 0:
+            self.counter = 0
+        
+        self.set_counter_text("({} out of {} vocabs)".format(self.counter,self.deck_length))
+        self.set_progress_value(int((self.counter/self.deck_length)*100))
+
+        result = self.check_card_is_correct()
+        if result:
+            if self.correct > 0:
+                self.correct -= 1
+            else:
+                self.correct = 0
+        else:
+            if self.incorrect > 0:
+                self.incorrect -= 1
+            else:
+                self.incorrect = 0
+        self.display_card()
+
+    def check_card_is_correct(self):
+        return self.card.is_correct
 
     def set_amount_pressed(self):
         amount,ok = QInputDialog.getText(self, 'Set Amount', 'Type number of vocab cards to generate for deck:')
@@ -88,7 +120,7 @@ class VocabularyPracticeApp(QMainWindow):
         self.progress_charts.generate_week_stats(True)
 
     def display_card(self):
-        self.card = self.vocab_deck.pop()
+        self.card = self.vocab_deck[self.deck_index]
         self.counter += 1
 
         if self.practice_mode == "Practice Vocab":
@@ -137,6 +169,8 @@ class VocabularyPracticeApp(QMainWindow):
 
     def correct_button_pressed(self):
         self.correct += 1
+        self.card.set_correct()
+        self.deck_index += 1
         if len(self.vocab_deck) != 0:
             self.display_card()
         else:
@@ -145,6 +179,8 @@ class VocabularyPracticeApp(QMainWindow):
 
     def incorrect_button_pressed(self):
         self.incorrect += 1
+        self.card.set_incorrect()
+        self.deck_index += 1
         if len(self.vocab_deck) != 0:
             self.display_card()
         else:

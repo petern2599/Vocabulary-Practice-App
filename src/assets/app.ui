@@ -403,6 +403,8 @@ QPushButton:pressed{
     </widget>
     <addaction name="actionAdd_Spreadsheet"/>
     <addaction name="actionStart"/>
+    <addaction name="actionUndo"/>
+    <addaction name="separator"/>
     <addaction name="menuView_Progress_Charts"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
@@ -458,6 +460,11 @@ QPushButton:pressed{
   <action name="actionPercent_Chart">
    <property name="text">
     <string>Percent Chart</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
    </property>
   </action>
  </widget>

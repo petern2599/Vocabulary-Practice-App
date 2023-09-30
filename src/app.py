@@ -59,7 +59,6 @@ class VocabularyPracticeApp(QMainWindow):
             self.enable_buttons()
             self.vocab_deck = self.deck_factory.create_vocab_deck()
             self.deck_length = len(self.vocab_deck)
-            self.vocab_deck.reverse()
             self.counter = 0
             self.correct = 0
             self.incorrect = 0

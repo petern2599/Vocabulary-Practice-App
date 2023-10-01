@@ -4,6 +4,7 @@ from components.deck_factory import DeckFactory
 from components.vocab_card import VocabCard
 from components.json_logger import JSONLogger
 from components.progression_chart import ProgressionChart
+from datetime import date,timedelta
 
 class VocabularyPracticeApp(QMainWindow):
     def __init__(self):
@@ -14,8 +15,10 @@ class VocabularyPracticeApp(QMainWindow):
         self.deck_factory = DeckFactory()
         self.progress_charts = ProgressionChart(self)
         self.set_default_settings()
-
         self.json_logger = JSONLogger()
+        streak_date = date.today()
+        streak_amount = self.check_streak(streak_date)
+        self.set_streak(56)
 
     def ui_setup(self):
         self.actionAdd_Spreadsheet.triggered.connect(self.add_spreadsheet_pressed)
@@ -26,8 +29,8 @@ class VocabularyPracticeApp(QMainWindow):
         self.actionToday_s_Stats.triggered.connect(self.today_stats_pressed)
         self.actionBar_Chart.triggered.connect(self.week_stats_bar_pressed)
         self.actionPercent_Chart.triggered.connect(self.week_stats_percent_pressed)
-        self.actionBar_Chart_2.triggered.connect(self.month_stats_bar_pressed)
-        self.actionPercent_Chart_2.triggered.connect(self.month_stats_percent_pressed)
+        self.actionBar_Chart_2.triggered.connect(self.weekly_stats_bar_pressed)
+        self.actionPercent_Chart_2.triggered.connect(self.weekly_stats_percent_pressed)
         self.correct_button.clicked.connect(self.correct_button_pressed)
         self.incorrect_button.clicked.connect(self.incorrect_button_pressed)
         self.show_button.clicked.connect(self.show_button_pressed)
@@ -36,6 +39,7 @@ class VocabularyPracticeApp(QMainWindow):
         self.deck_factory.set_amount(10)
         self.practice_mode = "Practice Vocab"
         self.is_done = False
+        self.is_practicing = False
 
     def add_spreadsheet_pressed(self):
         try:
@@ -67,6 +71,7 @@ class VocabularyPracticeApp(QMainWindow):
             self.incorrect = 0
             self.deck_index = 0
             self.is_done = False
+            self.is_practicing = True
             self.display_card()
 
     def undo_pressed(self):
@@ -100,18 +105,21 @@ class VocabularyPracticeApp(QMainWindow):
         return self.card.is_correct
 
     def set_amount_pressed(self):
-        amount,ok = QInputDialog.getText(self, 'Set Amount', 'Type number of vocab cards to generate for deck:')
-        if ok:
-            self.set_amount(amount)
-
-    def set_amount(self,amount):
-        self.deck_factory.set_amount(amount)
+        if self.is_practicing == False:
+            amount,ok = QInputDialog.getText(self, 'Set Amount', 'Type number of vocab cards to generate for deck:')
+            if ok:
+                self.deck_factory.set_amount(amount)
+        else:
+            self.generate_msg("Finish current practice before setting amount...",1)
 
     def set_mode_pressed(self):
-        practice_modes = ("Practice Vocab", "Practice Translation")
-        practice_mode,ok = QInputDialog.getItem(self, 'Set Practice Mode', 'Select Practice Mode:',practice_modes,0,False)
-        if ok and practice_mode:
-            self.practice_mode = practice_mode
+        if self.is_practicing == False:
+            practice_modes = ("Practice Vocab", "Practice Translation")
+            practice_mode,ok = QInputDialog.getItem(self, 'Set Practice Mode', 'Select Practice Mode:',practice_modes,0,False)
+            if ok and practice_mode:
+                self.practice_mode = practice_mode
+        else:
+            self.generate_msg("Finish current practice before setting amount...",1)
 
     def today_stats_pressed(self):
         self.progress_charts.generate_today_stats()
@@ -122,11 +130,11 @@ class VocabularyPracticeApp(QMainWindow):
     def week_stats_percent_pressed(self):
         self.progress_charts.generate_week_stats(True)
 
-    def month_stats_bar_pressed(self):
-        self.progress_charts.generate_month_stats(False)
+    def weekly_stats_bar_pressed(self):
+        self.progress_charts.generate_weekly_stats(False)
 
-    def month_stats_percent_pressed(self):
-        self.progress_charts.generate_month_stats(True)
+    def weekly_stats_percent_pressed(self):
+        self.progress_charts.generate_weekly_stats(True)
 
     def display_card(self):
         self.card = self.vocab_deck[self.deck_index]
@@ -187,6 +195,7 @@ class VocabularyPracticeApp(QMainWindow):
         else:
             self.create_log()
             self.is_done = True
+            self.is_practicing = False
             self.generate_msg("No more cards in deck, logging stats...",0)
 
     def incorrect_button_pressed(self):
@@ -200,6 +209,7 @@ class VocabularyPracticeApp(QMainWindow):
         else:
             self.create_log()
             self.is_done = True
+            self.is_practicing = False
             self.generate_msg("No more cards in deck, logging stats...",0)
 
     def show_button_pressed(self):
@@ -223,6 +233,16 @@ class VocabularyPracticeApp(QMainWindow):
         else:
             message.setWindowTitle('Message')
         message.exec_()
+
+    def check_streak(self,date_to_check):
+        streak_amount = self.json_logger.check_streak(date_to_check)
+        return streak_amount
+
+    def set_streak(self,amount):
+        if amount < 1000:
+            self.streak_label.setText("{}".format(amount))
+        else:
+            self.streak_label.setText("{}+".format(999))
 
 def main():
     app = QApplication([])

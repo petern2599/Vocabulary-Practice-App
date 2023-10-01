@@ -17,7 +17,8 @@ class ProgressionChart:
             fig = plt.figure(num="Today's Stats Progression Chart")
             plt.pie(stats[0:2], labels = labels[0:2], wedgeprops=dict(width=0.5),startangle=90,colors=colors)
             plt.title("Today's Stats",fontweight="bold")
-            plt.text(-0.3,-0.1,"{}%".format(stats[0]/(stats[0]+stats[1])*100),fontsize=24)
+            plt.text(-0.35,-0.1,"{}%".format(stats[0]/(stats[0]+stats[1])*100),fontsize=24)
+            plt.legend()
             plt.show()
         else:
             self.main_app.generate_msg("Today's log entry does not exist...",1)
@@ -112,28 +113,13 @@ class ProgressionChart:
             plt.title("Current Week's Stats",fontweight="bold")
             plt.show()
             
-    def generate_month_stats(self,as_percent):
+    def generate_weekly_stats(self,as_percent):
         weekly_stats = self.get_weekly_stats()
-        correct_stats = 0
-        incorrect_stats = 0
-        practice_amount_stats = 0
-
-        accumulate_weekly_stats = []
-        #Okay to do nested for loop because worst case is 35 iterations (5 weeks per month * 7 days per week)
-        for week_number in range(len(weekly_stats)):
-            for day in range(len(weekly_stats[week_number])):
-                correct_stats += weekly_stats[week_number][day][0]
-                incorrect_stats += weekly_stats[week_number][day][1]
-                practice_amount_stats += weekly_stats[week_number][day][2]
-            accumulate_weekly_stats.append((correct_stats,incorrect_stats,practice_amount_stats))
-            correct_stats = 0
-            incorrect_stats = 0
-            practice_amount_stats = 0
+        accumulate_weekly_stats = self.get_accumulate_weekly_stats(weekly_stats)
         
-
         week_array = []
         if as_percent:
-            plt.figure(num="Month's Stats Progression Chart")
+            plt.figure(num="Weekly Stats Progression Chart")
             percent_array = [0]*len(accumulate_weekly_stats)
             for week_index in range(len(accumulate_weekly_stats)):
                 total = accumulate_weekly_stats[week_index][0]+accumulate_weekly_stats[week_index][1]
@@ -161,11 +147,11 @@ class ProgressionChart:
                 
             plt.plot([], [], ' ', label="PA -> Practice Amount")
             plt.legend()
-            plt.title("Current Month's Stats",fontweight="bold")
+            plt.title("Weekly Stats in Current Month",fontweight="bold")
             plt.show()
         else:
             bar_width = 0.40
-            plt.figure(num="Month's Stats Progression Chart")
+            plt.figure(num="Weekly Stats Progression Chart")
             bar_correct = np.arange(len(accumulate_weekly_stats))
             bar_incorrect = [x + bar_width for x in bar_correct]
 
@@ -184,7 +170,7 @@ class ProgressionChart:
             plt.bar(bar_incorrect, incorrect_stats_array, color ='r', width = bar_width,
                 edgecolor ='grey', label ='Incorrect')
             
-            plt.xlabel("Weekday",fontweight ='bold')
+            plt.xlabel("Week Number",fontweight ='bold')
             plt.ylabel('Count',fontweight ='bold')
             plt.xticks([r + bar_width/2 for r in range(len(accumulate_weekly_stats))],
                     week_array,fontsize=8)
@@ -196,7 +182,7 @@ class ProgressionChart:
             
             for week_index in range(len(correct_stats_array)):
                 max_value = max(correct_stats_array[week_index],incorrect_stats_array[week_index])
-                plt.text(week_index+.2,max_value+15,"PA: {}".format(practice_amount_stats_array[week_index])
+                plt.text(week_index+.2,max_value+5,"PA: {}".format(practice_amount_stats_array[week_index])
                         ,horizontalalignment='center')
                 
                 plt.text(week_index-0.12,correct_stats_array[week_index]+0.1,"{}".format(correct_stats_array[week_index]),fontsize=10)
@@ -204,7 +190,7 @@ class ProgressionChart:
                 
             plt.plot([], [], ' ', label="PA -> Practice Amount")
             plt.legend()
-            plt.title("Current Month's Stats",fontweight="bold")
+            plt.title("Weekly Stats in Current Month",fontweight="bold")
             plt.show()
 
     def get_weekly_stats(self):
@@ -236,6 +222,24 @@ class ProgressionChart:
                 week_stats.clear()
                 week_index +=1
         return weekly_stats
+    
+    def get_accumulate_weekly_stats(self,weekly_stats):
+        correct_stats = 0
+        incorrect_stats = 0
+        practice_amount_stats = 0
+
+        accumulate_weekly_stats = []
+        #Okay to do nested for loop because worst case is 35 iterations (5 weeks per month * 7 days per week)
+        for week_number in range(len(weekly_stats)):
+            for day in range(len(weekly_stats[week_number])):
+                correct_stats += weekly_stats[week_number][day][0]
+                incorrect_stats += weekly_stats[week_number][day][1]
+                practice_amount_stats += weekly_stats[week_number][day][2]
+            accumulate_weekly_stats.append((correct_stats,incorrect_stats,practice_amount_stats))
+            correct_stats = 0
+            incorrect_stats = 0
+            practice_amount_stats = 0
+        return accumulate_weekly_stats
     
     def get_current_year(self):
         return date.today().strftime("%Y")
@@ -271,4 +275,4 @@ class ProgressionChart:
 
 if __name__ == "__main__":
     pc = ProgressionChart("hi")
-    pc.generate_month_stats(True)
+    pc.generate_weekly_stats(True)

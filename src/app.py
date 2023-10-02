@@ -205,6 +205,9 @@ class VocabularyPracticeApp(QMainWindow):
             self.is_done = True
             self.is_practicing = False
             self.generate_msg("No more cards in deck, logging stats...",0)
+            today = date.today()
+            streak_amount = self.check_streak(today)
+            self.set_streak(streak_amount)
 
     def incorrect_button_pressed(self):
         self.incorrect += 1
@@ -219,6 +222,9 @@ class VocabularyPracticeApp(QMainWindow):
             self.is_done = True
             self.is_practicing = False
             self.generate_msg("No more cards in deck, logging stats...",0)
+            today = date.today()
+            streak_amount = self.check_streak(today)
+            self.set_streak(streak_amount)
 
     def show_button_pressed(self):
         if self.show_button_toggle == 0:

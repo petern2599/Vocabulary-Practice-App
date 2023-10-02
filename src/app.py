@@ -17,8 +17,16 @@ class VocabularyPracticeApp(QMainWindow):
         self.set_default_settings()
         self.json_logger = JSONLogger()
         streak_date = date.today()
-        streak_amount = self.check_streak(streak_date)
-        self.set_streak(streak_amount)
+        streak_amount_today = self.check_streak(streak_date)
+        streak_date -= timedelta(days=1)
+        streak_amount_yesterday = self.check_streak(streak_date)
+
+        if streak_amount_today != 0:
+            self.set_streak(streak_amount_today)
+        elif streak_amount_yesterday != 0:
+            self.set_streak(streak_amount_yesterday)
+        else:
+            self.set_streak(0)
 
     def ui_setup(self):
         self.actionAdd_Spreadsheet.triggered.connect(self.add_spreadsheet_pressed)

@@ -81,8 +81,14 @@ class JSONLogger():
                 file.seek(0)
                 json.dump(file_data,file,indent=4)
             else:
+                yesterday = date.today()
+                yesterday -= timedelta(days=1)
+                if yesterday in file_data:
+                    streak_stat = file_data[yesterday]["streak"]
+                else:
+                    streak_stat = 0
                 print("Adding new entry in log file...")
-                file_data[day] = {"correct":correct, "incorrect":incorrect,"practice amount":1}
+                file_data[day] = {"correct":correct, "incorrect":incorrect,"practice amount":1,"streak":streak_stat}
                 file.seek(0)
                 json.dump(file_data,file,indent=4)
 

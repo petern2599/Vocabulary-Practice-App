@@ -40,13 +40,13 @@ class ProgressionChart:
                 correct_stats_array[weekday_index] = stats[0]
                 incorrect_stats_array[weekday_index] = stats[1]
                 practice_amount_stats_array[weekday_index] = stats[2]
-                date_array[weekday_index] = current_date.strftime("%m/%d/%y")
+                date_array[weekday_index] = current_date.strftime("%m/%d/%y") + " (PA: {})".format(practice_amount_stats_array[weekday_index])
                 
             else:
                 correct_stats_array[weekday_index] = 0
                 incorrect_stats_array[weekday_index] = 0
                 practice_amount_stats_array[weekday_index] = 0
-                date_array[weekday_index] = current_date.strftime("%m/%d/%y")
+                date_array[weekday_index] = current_date.strftime("%m/%d/%y") + " (PA: 0)"
             
             current_date += timedelta(days=1)
 
@@ -66,13 +66,13 @@ class ProgressionChart:
             plt.xlabel("Weekday",fontweight ='bold')
             plt.ylabel('Percentage',fontweight ='bold')
             plt.xticks([r for r in range(len(correct_stats_array))],
-                    date_array,fontsize=8)
+                    date_array,fontsize=6,rotation=30,horizontalalignment='right')
             max_val = max(percent_array)
             plt.ylim(0, max_val+10)
 
             for weekday_index in range(len(correct_stats_array)):
-                plt.text(weekday_index+.1,percent_array[weekday_index]+2,"PA: {} \n {}%"
-                         .format(practice_amount_stats_array[weekday_index],percent_array[weekday_index]),
+                plt.text(weekday_index+.1,percent_array[weekday_index]+2,"{}%"
+                         .format(percent_array[weekday_index]),
                          horizontalalignment='center')
                 
             plt.plot([], [], ' ', label="PA -> Practice Amount")
@@ -93,7 +93,7 @@ class ProgressionChart:
             plt.xlabel("Weekday",fontweight ='bold')
             plt.ylabel('Count',fontweight ='bold')
             plt.xticks([r + bar_width/2 for r in range(len(correct_stats_array))],
-                    date_array,fontsize=8)
+                    date_array,fontsize=6,rotation=30,horizontalalignment='right')
             
             max_val_correct = max(correct_stats_array)
             max_val_incorrect = max(incorrect_stats_array)
@@ -101,9 +101,6 @@ class ProgressionChart:
             plt.ylim(0, max_val+10)
             
             for weekday_index in range(len(correct_stats_array)):
-                max_value = max(correct_stats_array[weekday_index],incorrect_stats_array[weekday_index])
-                plt.text(weekday_index+.1,max_value+5,"PA: {}".format(practice_amount_stats_array[weekday_index])
-                        ,horizontalalignment='center')
                 
                 plt.text(weekday_index-0.12,correct_stats_array[weekday_index]+0.1,"{}".format(correct_stats_array[weekday_index]),fontsize=10)
                 plt.text(weekday_index+0.27,incorrect_stats_array[weekday_index]+0.1,"{}".format(incorrect_stats_array[weekday_index]),fontsize=10)
@@ -127,7 +124,7 @@ class ProgressionChart:
                     percent_array[week_index] = 0.00
                 else:
                     percent_array[week_index] = round((accumulate_weekly_stats[week_index][0]/total)*100,2)
-                week_array.append("Week {}".format(week_index+1))
+                week_array.append("Week {} (PA:{})".format(week_index+1,accumulate_weekly_stats[week_index][2]))
                 
             
             plt.plot(range(len(percent_array)),percent_array)
@@ -136,13 +133,13 @@ class ProgressionChart:
             plt.xlabel("Week Number",fontweight ='bold')
             plt.ylabel('Percentage',fontweight ='bold')
             plt.xticks([r for r in range(len(accumulate_weekly_stats))],
-                    week_array,fontsize=8)
+                    week_array,fontsize=6,rotation=30,horizontalalignment='right')
             max_val = max(percent_array)
             plt.ylim(0, max_val+10)
 
             for week_index in range(len(accumulate_weekly_stats)):
-                plt.text(week_index+.1,percent_array[week_index]+2,"PA: {} \n {}%"
-                         .format(accumulate_weekly_stats[week_index][2],percent_array[week_index]),
+                plt.text(week_index+.1,percent_array[week_index]+2,"{}%"
+                         .format(percent_array[week_index]),
                          horizontalalignment='center')
                 
             plt.plot([], [], ' ', label="PA -> Practice Amount")
@@ -162,7 +159,7 @@ class ProgressionChart:
                 correct_stats_array.append(accumulate_weekly_stats[week_index][0])
                 incorrect_stats_array.append(accumulate_weekly_stats[week_index][1])
                 practice_amount_stats_array.append(accumulate_weekly_stats[week_index][2])
-                week_array.append("Week {}".format(week_index+1))
+                week_array.append("Week {} (PA:{})".format(week_index+1,accumulate_weekly_stats[week_index][2]))
                 
 
             plt.bar(bar_correct, correct_stats_array, color ='g', width = bar_width,
@@ -173,7 +170,7 @@ class ProgressionChart:
             plt.xlabel("Week Number",fontweight ='bold')
             plt.ylabel('Count',fontweight ='bold')
             plt.xticks([r + bar_width/2 for r in range(len(accumulate_weekly_stats))],
-                    week_array,fontsize=8)
+                    week_array,fontsize=6,rotation=30,horizontalalignment='right')
             
             max_val_correct = max(correct_stats_array)
             max_val_incorrect = max(incorrect_stats_array)
@@ -181,10 +178,6 @@ class ProgressionChart:
             plt.ylim(0, max_val+30)
             
             for week_index in range(len(correct_stats_array)):
-                max_value = max(correct_stats_array[week_index],incorrect_stats_array[week_index])
-                plt.text(week_index+.2,max_value+5,"PA: {}".format(practice_amount_stats_array[week_index])
-                        ,horizontalalignment='center')
-                
                 plt.text(week_index-0.12,correct_stats_array[week_index]+0.1,"{}".format(correct_stats_array[week_index]),fontsize=10)
                 plt.text(week_index+0.3,incorrect_stats_array[week_index]+0.1,"{}".format(incorrect_stats_array[week_index]),fontsize=10)
                 

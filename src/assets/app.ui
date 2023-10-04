@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(189, 189, 189);</string>
+   <string notr="true">background-color:rgb(217, 217, 217);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -23,7 +23,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>40</height>
+        <height>50</height>
        </size>
       </property>
       <property name="maximumSize">
@@ -39,6 +39,12 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label_2">
          <property name="minimumSize">
@@ -59,7 +65,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QFrame" name="frame_6">
+        <widget class="QFrame" name="streak_frame">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -69,19 +75,19 @@
          <property name="minimumSize">
           <size>
            <width>100</width>
-           <height>30</height>
+           <height>40</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>100</width>
-           <height>30</height>
+           <height>40</height>
           </size>
          </property>
          <property name="styleSheet">
           <string notr="true">QFrame{
 	border-radius: 12px;
-	background-color: rgb(247, 247, 247);
+	background-color: rgb(85, 170, 255);
 }</string>
          </property>
          <property name="frameShape">
@@ -182,42 +188,72 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QLabel" name="label_4">
+        <widget class="QFrame" name="title_frame">
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>30</height>
+           <height>50</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>30</height>
+           <height>50</height>
           </size>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>20</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
+         <property name="styleSheet">
+          <string notr="true">QFrame{
+	border-radius: 12px;
+	background-color:rgb(85, 170, 255);
+}</string>
          </property>
-         <property name="contextMenuPolicy">
-          <enum>Qt::NoContextMenu</enum>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
          </property>
-         <property name="text">
-          <string>Vocabulary Practice Application</string>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>20</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="contextMenuPolicy">
+             <enum>Qt::NoContextMenu</enum>
+            </property>
+            <property name="text">
+             <string>Vocabulary Practice Application</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="frame">
+     <widget class="QFrame" name="card_frame">
       <property name="minimumSize">
        <size>
         <width>300</width>
@@ -452,7 +488,7 @@ QPushButton:pressed{
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="frame_2">
+     <widget class="QFrame" name="buttons_frame">
       <property name="minimumSize">
        <size>
         <width>0</width>

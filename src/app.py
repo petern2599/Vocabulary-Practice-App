@@ -89,7 +89,7 @@ class VocabularyPracticeApp(QMainWindow):
             self.display_card()
 
     def undo_pressed(self):
-        if self.deck_factory.vocab_df == None:
+        if self.deck_factory.vocab_df.empty:
             self.disable_buttons()
             self.generate_msg("You did not add a spreadsheet...",1)
         elif len(self.deck_factory.vocab_df) == 0:

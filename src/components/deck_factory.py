@@ -12,7 +12,7 @@ class DeckFactory:
     def __init__(self):
         print("DeckFactory has been started...")
         self.amount = None
-        self.vocab_df = None
+        self.vocab_df = pandas.DataFrame()
 
     def read_spreadsheet(self,sheet_path):
         self.vocab_df = pandas.read_csv(sheet_path)

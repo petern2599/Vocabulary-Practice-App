@@ -6,50 +6,258 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>604</width>
-    <height>741</height>
+    <width>944</width>
+    <height>765</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(189, 189, 189);</string>
+   <string notr="true">background-color:rgb(217, 217, 217);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QLabel" name="label_4">
+     <widget class="QFrame" name="frame_5">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>50</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>30</height>
+        <height>40</height>
        </size>
       </property>
-      <property name="font">
-       <font>
-        <pointsize>20</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
       </property>
-      <property name="contextMenuPolicy">
-       <enum>Qt::NoContextMenu</enum>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
       </property>
-      <property name="text">
-       <string>Vocabulary Practice Application</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="minimumSize">
+          <size>
+           <width>800</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>999999</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QFrame" name="streak_frame">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QFrame{
+	border-radius: 12px;
+	background-color: rgb(85, 170, 255);
+}</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
+          <property name="horizontalSpacing">
+           <number>0</number>
+          </property>
+          <property name="verticalSpacing">
+           <number>6</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="minimumSize">
+             <size>
+              <width>30</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>30</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap>streak_icon.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="streak_label">
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>50</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>999+</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+         <zorder>streak_label</zorder>
+         <zorder>label</zorder>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="frame">
+     <widget class="QFrame" name="frame_4">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>60</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>60</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QFrame" name="title_frame">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QFrame{
+	border-radius: 12px;
+	background-color:rgb(85, 170, 255);
+}</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>20</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="contextMenuPolicy">
+             <enum>Qt::NoContextMenu</enum>
+            </property>
+            <property name="text">
+             <string>Vocabulary Practice Application</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="card_frame">
       <property name="minimumSize">
        <size>
         <width>300</width>
-        <height>400</height>
+        <height>350</height>
        </size>
       </property>
       <property name="maximumSize">
@@ -124,7 +332,7 @@
          </property>
          <property name="font">
           <font>
-           <pointsize>16</pointsize>
+           <pointsize>20</pointsize>
           </font>
          </property>
          <property name="text">
@@ -149,7 +357,13 @@
       <property name="minimumSize">
        <size>
         <width>300</width>
-        <height>100</height>
+        <height>150</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>150</height>
        </size>
       </property>
       <property name="styleSheet">
@@ -235,7 +449,7 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>50</height>
+           <height>40</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -274,7 +488,7 @@ QPushButton:pressed{
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="frame_2">
+     <widget class="QFrame" name="buttons_frame">
       <property name="minimumSize">
        <size>
         <width>0</width>
@@ -378,7 +592,7 @@ QPushButton:pressed{
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>604</width>
+     <width>944</width>
      <height>21</height>
     </rect>
    </property>
@@ -386,8 +600,33 @@ QPushButton:pressed{
     <property name="title">
      <string>Actions</string>
     </property>
+    <widget class="QMenu" name="menuView_Progress_Charts">
+     <property name="title">
+      <string>View Progress Charts</string>
+     </property>
+     <widget class="QMenu" name="menuWeek_s_Stats">
+      <property name="title">
+       <string>Week's Stats</string>
+      </property>
+      <addaction name="actionBar_Chart"/>
+      <addaction name="actionPercent_Chart"/>
+     </widget>
+     <widget class="QMenu" name="menuMonth_s_Stats">
+      <property name="title">
+       <string>Month's Stats</string>
+      </property>
+      <addaction name="actionBar_Chart_2"/>
+      <addaction name="actionPercent_Chart_2"/>
+     </widget>
+     <addaction name="actionToday_s_Stats"/>
+     <addaction name="menuWeek_s_Stats"/>
+     <addaction name="menuMonth_s_Stats"/>
+    </widget>
     <addaction name="actionAdd_Spreadsheet"/>
     <addaction name="actionStart"/>
+    <addaction name="actionUndo"/>
+    <addaction name="separator"/>
+    <addaction name="menuView_Progress_Charts"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
@@ -422,6 +661,36 @@ QPushButton:pressed{
   <action name="actionSet_Mode">
    <property name="text">
     <string>Set Mode</string>
+   </property>
+  </action>
+  <action name="actionToday_s_Stats">
+   <property name="text">
+    <string>Today's Stats</string>
+   </property>
+  </action>
+  <action name="actionBar_Chart">
+   <property name="text">
+    <string>Bar Chart</string>
+   </property>
+  </action>
+  <action name="actionPercent_Chart">
+   <property name="text">
+    <string>Percent Chart</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="actionBar_Chart_2">
+   <property name="text">
+    <string>Bar Chart</string>
+   </property>
+  </action>
+  <action name="actionPercent_Chart_2">
+   <property name="text">
+    <string>Percent Chart</string>
    </property>
   </action>
  </widget>

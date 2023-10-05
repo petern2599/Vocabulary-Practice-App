@@ -95,7 +95,7 @@ class VocabularyPracticeApp(QMainWindow):
         elif len(self.deck_factory.vocab_df) == 0:
                 self.disable_buttons()
                 self.generate_msg("Spreadsheet appears to be empty...",1)
-        else:
+        elif self.is_done==False and self.is_practicing==True:
             self.deck_index -= 1
             if self.deck_index < 0:
                 self.deck_index = 0
@@ -121,6 +121,9 @@ class VocabularyPracticeApp(QMainWindow):
                 else:
                     self.incorrect = 0
             self.display_card()
+        else:
+            self.disable_buttons()
+            self.generate_msg("You have already completed this practice run, please press start again if you want to practice more...",0)
 
     def check_card_is_correct(self):
         return self.card.is_correct
@@ -221,6 +224,7 @@ class VocabularyPracticeApp(QMainWindow):
             today = date.today()
             streak_amount = self.check_streak(today)
             self.set_streak(streak_amount)
+            self.disable_buttons()
 
     def incorrect_button_pressed(self):
         self.incorrect += 1
@@ -238,6 +242,7 @@ class VocabularyPracticeApp(QMainWindow):
             today = date.today()
             streak_amount = self.check_streak(today)
             self.set_streak(streak_amount)
+            self.disable_buttons()
 
     def show_button_pressed(self):
         if self.show_button_toggle == 0:

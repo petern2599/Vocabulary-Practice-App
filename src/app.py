@@ -33,6 +33,7 @@ class VocabularyPracticeApp(QMainWindow):
     def ui_setup(self):
         self.actionAdd_Spreadsheet.triggered.connect(self.add_spreadsheet_pressed)
         self.actionStart.triggered.connect(self.start_pressed)
+        self.actionExit.triggered.connect(self.exit_pressed)
         self.actionUndo.triggered.connect(self.undo_pressed)
         self.actionSet_Amount.triggered.connect(self.set_amount_pressed)
         self.actionSet_Mode.triggered.connect(self.set_mode_pressed)
@@ -44,6 +45,9 @@ class VocabularyPracticeApp(QMainWindow):
         self.correct_button.clicked.connect(self.correct_button_pressed)
         self.incorrect_button.clicked.connect(self.incorrect_button_pressed)
         self.show_button.clicked.connect(self.show_button_pressed)
+
+        self.set_main_text("Welcome")
+        self.set_sub_text("Please press start to begin...")
 
     def set_default_settings(self):
         self.deck_factory.set_amount(10)
@@ -87,6 +91,14 @@ class VocabularyPracticeApp(QMainWindow):
             self.is_done = False
             self.is_practicing = True
             self.display_card()
+
+    def exit_pressed(self):
+        self.disable_buttons()
+        self.remove_card_indexes_from_dictionary()
+        self.is_done = True
+        self.is_practicing = False
+        self.set_main_text("Practice has ended")
+        self.set_sub_text("Please press start to begin again...")
 
     def undo_pressed(self):
         if self.deck_factory.vocab_df.empty:
@@ -225,6 +237,8 @@ class VocabularyPracticeApp(QMainWindow):
             streak_amount = self.check_streak(today)
             self.set_streak(streak_amount)
             self.disable_buttons()
+            self.set_main_text("Practice is finished")
+            self.set_sub_text("Please press start to begin again...")
 
     def incorrect_button_pressed(self):
         self.incorrect += 1
@@ -245,6 +259,8 @@ class VocabularyPracticeApp(QMainWindow):
             streak_amount = self.check_streak(today)
             self.set_streak(streak_amount)
             self.disable_buttons()
+            self.set_main_text("Practice is finished")
+            self.set_sub_text("Please press start to begin again...")
 
     def show_button_pressed(self):
         if self.show_button_toggle == 0:
@@ -278,6 +294,10 @@ class VocabularyPracticeApp(QMainWindow):
         else:
             self.streak_label.setText("{}+".format(999))
 
+    def remove_card_indexes_from_dictionary(self):
+        for card in range(0,self.deck_index):
+            self.json_logger.remove_index_in_dictionary(self.vocab_deck[card].index)
+        
 def main():
     app = QApplication([])
     window = VocabularyPracticeApp()

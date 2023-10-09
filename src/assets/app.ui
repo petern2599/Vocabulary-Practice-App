@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>944</width>
-    <height>765</height>
+    <height>773</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -624,6 +624,7 @@ QPushButton:pressed{
     </widget>
     <addaction name="actionAdd_Spreadsheet"/>
     <addaction name="actionStart"/>
+    <addaction name="actionExit"/>
     <addaction name="actionUndo"/>
     <addaction name="separator"/>
     <addaction name="menuView_Progress_Charts"/>
@@ -691,6 +692,11 @@ QPushButton:pressed{
   <action name="actionPercent_Chart_2">
    <property name="text">
     <string>Percent Chart</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
    </property>
   </action>
  </widget>

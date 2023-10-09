@@ -119,10 +119,8 @@ class JSONLogger():
     def add_index_to_dictionary(self,index):
         if str(index) in self.incorrect_dictionary.keys():
             self.incorrect_dictionary[str(index)] += 1
-            print(self.incorrect_dictionary)
         else:
             self.incorrect_dictionary[str(index)] = 1
-            print(self.incorrect_dictionary)
     
     def initialize_incorrect_dictionary(self,json_path):
         day = date.today().strftime("%m-%d-%y")
@@ -130,8 +128,11 @@ class JSONLogger():
             file_data = json.load(file)
             if day in file_data:
                 self.incorrect_dictionary = file_data[day]["incorrect terms"]
-                print(self.incorrect_dictionary)
             else:
                 self.incorrect_dictionary = {}
-                print(self.incorrect_dictionary)
     
+    def remove_index_in_dictionary(self,index):
+        if self.incorrect_dictionary[str(index)] == 1:
+            del self.incorrect_dictionary[str(index)]
+        else:
+            self.incorrect_dictionary[str(index)] -= 1

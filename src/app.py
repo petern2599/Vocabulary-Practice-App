@@ -143,8 +143,10 @@ class VocabularyPracticeApp(QMainWindow):
     def set_amount_pressed(self):
         if self.is_practicing == False:
             amount,ok = QInputDialog.getText(self, 'Set Amount', 'Type number of vocab cards to generate for deck:')
-            if ok:
+            if ok and int(amount) > 10:
                 self.deck_factory.set_amount(amount)
+            elif int(amount) < 10:
+                self.generate_msg("Please set amount greater than or equal to 10",1)
         else:
             self.generate_msg("Finish current practice before setting amount...",1)
 
@@ -297,7 +299,7 @@ class VocabularyPracticeApp(QMainWindow):
     def remove_card_indexes_from_dictionary(self):
         for card in range(0,self.deck_index):
             self.json_logger.remove_index_in_dictionary(self.vocab_deck[card].index)
-        
+
 def main():
     app = QApplication([])
     window = VocabularyPracticeApp()

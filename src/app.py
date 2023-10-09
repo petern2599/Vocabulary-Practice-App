@@ -25,10 +25,19 @@ class VocabularyPracticeApp(QMainWindow):
 
         if streak_amount_today != 0:
             self.set_streak(streak_amount_today)
+            self.set_last_practice_length(0)
         elif streak_amount_yesterday != 0:
             self.set_streak(streak_amount_yesterday)
+            self.set_last_practice_length(1)
         else:
             self.set_streak(0)
+            last_practice_date = self.get_last_practice_date()
+            if last_practice_date == 0:
+                self.set_last_practice_length(1000)
+            else:
+                today = date.today()
+                difference = today - last_practice_date
+                self.set_last_practice_length(difference.days)
 
     def ui_setup(self):
         self.actionAdd_Spreadsheet.triggered.connect(self.add_spreadsheet_pressed)
@@ -46,6 +55,8 @@ class VocabularyPracticeApp(QMainWindow):
         self.incorrect_button.clicked.connect(self.incorrect_button_pressed)
         self.show_button.clicked.connect(self.show_button_pressed)
 
+        self.set_card_frame_shadow()
+
         self.set_main_text("Welcome")
         self.set_sub_text("Please press start to begin...")
 
@@ -54,6 +65,11 @@ class VocabularyPracticeApp(QMainWindow):
         self.practice_mode = "Practice Vocab"
         self.is_done = False
         self.is_practicing = False
+
+    def set_card_frame_shadow(self):
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(50)
+        self.card_frame.setGraphicsEffect(shadow)
 
     def add_spreadsheet_pressed(self):
         try:
@@ -296,6 +312,32 @@ class VocabularyPracticeApp(QMainWindow):
         else:
             self.streak_label.setText("{}+".format(999))
 
+    def set_last_practice_length(self,amount):
+        if amount == 0:
+            self.last_practice_label.setText("Today")
+        elif amount == 1:
+            self.last_practice_label.setText("Yesterday")
+        elif amount < 1000:
+            self.last_practice_label.setText("{} days ago".format(amount))
+        else:
+            self.last_practice_label.setText("{}+ days ago".format(999))
+
+    def get_last_practice_date(self):
+        counter = 0
+        date_to_check = date.today()
+        while counter < 1000:
+            log_exists = self.json_logger.check_last_practice_date_log(date_to_check)
+            if log_exists:
+                break
+            date_to_check -= timedelta(days=1)
+            counter += 1
+        
+        if counter < 1000:
+            return date_to_check
+        else:
+            # In case the counter is past 1000
+            return 0
+
     def remove_card_indexes_from_dictionary(self):
         for card in range(0,self.deck_index):
             self.json_logger.remove_index_in_dictionary(self.vocab_deck[card].index)
@@ -303,7 +345,7 @@ class VocabularyPracticeApp(QMainWindow):
 def main():
     app = QApplication([])
     window = VocabularyPracticeApp()
-    window.setWindowTitle('Vocabulary Practice')
+    window.setWindowTitle('Renshuu App')
     app.exec()
 
 if __name__ == "__main__":

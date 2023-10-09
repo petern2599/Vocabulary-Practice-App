@@ -4,12 +4,14 @@ from datetime import date,timedelta
 
 class JSONLogger():
     def __init__(self):
+        self.incorrect_dictionary = {}
         current_dir = os.getcwd()
         self.log_path = current_dir + "\log"
         self.check_log_directory_exists()
         year_path = self.check_current_year_log_folder_exists()
         json_path = self.check_current_month_log_file_exists(year_path)
         self.is_streak_changed = False
+        
         self.initialize_incorrect_dictionary(json_path)
     
     def check_log_directory_exists(self):
@@ -50,17 +52,43 @@ class JSONLogger():
         year_path = self.check_current_year_log_folder_exists()
         month_year = date_to_check.strftime("%m-%y")
         json_path = year_path + "\{}.json".format(month_year)
+        if os.path.exists(json_path):
+            with open(json_path,'r+') as file:
+                file_data = json.load(file)
+                day = date_to_check.strftime("%m-%d-%y")
+                if day in file_data:
+                    streak = file_data[day]["streak"]
+                    return streak
+                else:
+                    #If log entry for previous day doesn't exists, set streak to 0
+                    return 0
+        else:
+            return 0
+          
+    def check_last_practice_date_log(self,date_to_check):
+        self.check_log_directory_exists()
+        year_path = self.check_current_year_log_folder_exists()
+        month_year = date_to_check.strftime("%m-%y")
+        json_path = year_path + "\{}.json".format(month_year)
+        if os.path.exists(json_path):
+            with open(json_path,'r+') as file:
+                file_data = json.load(file)
+                day = date_to_check.strftime("%m-%d-%y")
+                practice_amount_stat = self.check_practice_on_date(date_to_check,file_data)
+                if day in file_data and len(file_data) >= 1 and practice_amount_stat > 0:
+                    return True
+                return False
+        else:
+            return False
+    
+    def check_practice_on_date(self,date_to_check,file_data):
+        day = date_to_check.strftime("%m-%d-%y")
+        if day in file_data:
+            practice_amount_stat = file_data[day]["practice amount"]
+            return practice_amount_stat
+        else:
+            return 0
 
-        with open(json_path,'r+') as file:
-            file_data = json.load(file)
-            day = date_to_check.strftime("%m-%d-%y")
-            if day in file_data:
-                streak = file_data[day]["streak"]
-                return streak
-            else:
-                #If log entry for previous day doesn't exists, set streak to 0
-                return 0
-            
     def append_daily_stats(self,correct,incorrect):
         day = date.today().strftime("%m-%d-%y")
         self.check_log_directory_exists()
@@ -124,12 +152,15 @@ class JSONLogger():
     
     def initialize_incorrect_dictionary(self,json_path):
         day = date.today().strftime("%m-%d-%y")
-        with open(json_path,"r+") as file:
-            file_data = json.load(file)
-            if day in file_data:
-                self.incorrect_dictionary = file_data[day]["incorrect terms"]
-            else:
-                self.incorrect_dictionary = {}
+        if os.path.exists(json_path):
+            with open(json_path,"r+") as file:
+                file_data = json.load(file)
+                if day in file_data:
+                    self.incorrect_dictionary = file_data[day]["incorrect terms"]
+                else:
+                    self.incorrect_dictionary = {}
+        else:
+            self.incorrect_dictionary = {}
     
     def remove_index_in_dictionary(self,index):
         if self.incorrect_dictionary[str(index)] == 1:

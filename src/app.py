@@ -231,10 +231,12 @@ class VocabularyPracticeApp(QMainWindow):
         self.card.set_incorrect()
         self.deck_index += 1
         if self.deck_index < len(self.vocab_deck) and self.is_done == False:
+            self.json_logger.add_index_to_dictionary(self.card.index)
             self.display_card()
         elif self.is_done == True:
             self.generate_msg("No more cards in deck...",0)
         else:
+            self.json_logger.add_index_to_dictionary(self.card.index)
             self.create_log()
             self.is_done = True
             self.is_practicing = False

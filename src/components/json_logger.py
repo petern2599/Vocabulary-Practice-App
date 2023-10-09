@@ -10,6 +10,7 @@ class JSONLogger():
         year_path = self.check_current_year_log_folder_exists()
         json_path = self.check_current_month_log_file_exists(year_path)
         self.is_streak_changed = False
+        self.initialize_incorrect_dictionary(json_path)
     
     def check_log_directory_exists(self):
         if os.path.exists(self.log_path):
@@ -38,7 +39,7 @@ class JSONLogger():
             day = date.today()
             day -= timedelta(days=1)
             streak = self.check_streak(day)
-            data = {"{}".format(date.today().strftime("%m-%d-%y")):{"correct":0, "incorrect":0, "practice amount":0, "streak":streak}}
+            data = {"{}".format(date.today().strftime("%m-%d-%y")):{"correct":0, "incorrect":0, "practice amount":0, "streak":streak, "incorrect terms": self.incorrect_dictionary}}
             with open(new_path, 'w') as file:
                 json.dump(data,file,indent=4)
             
@@ -75,9 +76,17 @@ class JSONLogger():
                 streak_stat = file_data[day]["streak"]
                 streak_change_check = self.check_streak_changed_before()
                 if streak_change_check:
-                    file_data[day]= {"correct":correct_stat + correct, "incorrect":incorrect_stat+incorrect, "practice amount": practice_amount_stat+1,"streak":streak_stat}
+                    file_data[day]= {"correct":correct_stat + correct, 
+                                     "incorrect":incorrect_stat+incorrect, 
+                                     "practice amount": practice_amount_stat+1,
+                                     "streak":streak_stat,
+                                     "incorrect terms":self.incorrect_dictionary}
                 else:
-                    file_data[day]= {"correct":correct_stat + correct, "incorrect":incorrect_stat+incorrect, "practice amount": practice_amount_stat+1,"streak":streak_stat+1}
+                    file_data[day]= {"correct":correct_stat + correct, 
+                                     "incorrect":incorrect_stat+incorrect, 
+                                     "practice amount": practice_amount_stat+1,
+                                     "streak":streak_stat+1,
+                                     "incorrect terms":self.incorrect_dictionary}
                 file.seek(0)
                 json.dump(file_data,file,indent=4)
             else:
@@ -85,7 +94,11 @@ class JSONLogger():
                 yesterday -= timedelta(days=1)
                 streak_stat = self.check_streak(yesterday)
                 print("Adding new entry in log file...")
-                file_data[day] = {"correct":correct, "incorrect":incorrect,"practice amount":1,"streak":streak_stat + 1}
+                file_data[day] = {"correct":correct, 
+                                  "incorrect":incorrect,
+                                  "practice amount":1,
+                                  "streak":streak_stat + 1, 
+                                  "incorrect terms": self.incorrect_dictionary}
                 file.seek(0)
                 json.dump(file_data,file,indent=4)
 
@@ -103,3 +116,22 @@ class JSONLogger():
         else:
             return False
         
+    def add_index_to_dictionary(self,index):
+        if str(index) in self.incorrect_dictionary.keys():
+            self.incorrect_dictionary[str(index)] += 1
+            print(self.incorrect_dictionary)
+        else:
+            self.incorrect_dictionary[str(index)] = 1
+            print(self.incorrect_dictionary)
+    
+    def initialize_incorrect_dictionary(self,json_path):
+        day = date.today().strftime("%m-%d-%y")
+        with open(json_path,"r+") as file:
+            file_data = json.load(file)
+            if day in file_data:
+                self.incorrect_dictionary = file_data[day]["incorrect terms"]
+                print(self.incorrect_dictionary)
+            else:
+                self.incorrect_dictionary = {}
+                print(self.incorrect_dictionary)
+    

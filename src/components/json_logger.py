@@ -163,7 +163,9 @@ class JSONLogger():
             self.incorrect_dictionary = {}
     
     def remove_index_in_dictionary(self,index):
-        if self.incorrect_dictionary[str(index)] == 1:
-            del self.incorrect_dictionary[str(index)]
-        else:
-            self.incorrect_dictionary[str(index)] -= 1
+        if str(index) in self.incorrect_dictionary.keys():
+            if self.incorrect_dictionary[str(index)] == 1:
+                del self.incorrect_dictionary[str(index)]
+            else:
+                self.incorrect_dictionary[str(index)] -= 1
+                

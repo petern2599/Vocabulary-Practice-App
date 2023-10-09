@@ -18,6 +18,7 @@ class VocabularyPracticeApp(QMainWindow):
         self.progress_charts = ProgressionChart(self)
         self.set_default_settings()
         self.json_logger = JSONLogger()
+
         streak_date = date.today()
         streak_amount_today = self.check_streak(streak_date)
         streak_date -= timedelta(days=1)
@@ -65,6 +66,10 @@ class VocabularyPracticeApp(QMainWindow):
         self.practice_mode = "Practice Vocab"
         self.is_done = False
         self.is_practicing = False
+        self.progress_25_reached = False
+        self.progress_50_reached = False
+        self.progress_75_reached = False
+        self.progress_100_reached = False
 
     def set_card_frame_shadow(self):
         shadow = QGraphicsDropShadowEffect()
@@ -110,11 +115,14 @@ class VocabularyPracticeApp(QMainWindow):
 
     def exit_pressed(self):
         self.disable_buttons()
-        self.remove_card_indexes_from_dictionary()
+        if hasattr(self, 'deck_index'):
+            self.remove_card_indexes_from_dictionary()
+            self.set_main_text("Practice has ended")
+            self.set_sub_text("Please press start to begin again...")
+        else:
+            self.generate_msg("Can't exit practice since it hasn't started yet...",1)
         self.is_done = True
         self.is_practicing = False
-        self.set_main_text("Practice has ended")
-        self.set_sub_text("Please press start to begin again...")
 
     def undo_pressed(self):
         if self.deck_factory.vocab_df.empty:
@@ -231,7 +239,7 @@ class VocabularyPracticeApp(QMainWindow):
 
     def set_progress_value(self,value):
         self.progressBar.setValue(value)
-
+            
     def set_show_button_text(self):
         if self.show_button_toggle:
             self.show_button.setText("Show Vocab")

@@ -66,10 +66,6 @@ class VocabularyPracticeApp(QMainWindow):
         self.practice_mode = "Practice Vocab"
         self.is_done = False
         self.is_practicing = False
-        self.progress_25_reached = False
-        self.progress_50_reached = False
-        self.progress_75_reached = False
-        self.progress_100_reached = False
 
     def set_card_frame_shadow(self):
         shadow = QGraphicsDropShadowEffect()

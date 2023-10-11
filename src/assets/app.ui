@@ -742,6 +742,7 @@ QPushButton:pressed{
     <addaction name="actionUndo"/>
     <addaction name="separator"/>
     <addaction name="menuView_Progress_Charts"/>
+    <addaction name="actionView_Incorrect_Cards"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
@@ -811,6 +812,11 @@ QPushButton:pressed{
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionView_Incorrect_Cards">
+   <property name="text">
+    <string>View Incorrect Cards</string>
    </property>
   </action>
  </widget>

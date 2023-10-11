@@ -169,3 +169,15 @@ class JSONLogger():
             else:
                 self.incorrect_dictionary[str(index)] -= 1
                 
+    def grab_today_incorrect_indexes(self):
+        year_path = self.check_current_year_log_folder_exists()
+        today = date.today()
+        month_year = today.strftime("%m-%y")
+        json_path = year_path + "\{}.json".format(month_year)
+        if os.path.exists(json_path):
+            with open(json_path,'r+') as file:
+                file_data = json.load(file)
+                day = today.strftime("%m-%d-%y")
+                if day in file_data:
+                    indexes = file_data[day]["incorrect terms"]
+                    return indexes

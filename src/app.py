@@ -6,6 +6,8 @@ from components.deck_factory import DeckFactory
 from components.vocab_card import VocabCard
 from components.json_logger import JSONLogger
 from components.progression_chart import ProgressionChart
+from components.progress_interface import ProgressUI
+from components.incorrect_table import IncorrectTableUI
 from datetime import date,timedelta
 
 class VocabularyPracticeApp(QMainWindow):
@@ -55,6 +57,7 @@ class VocabularyPracticeApp(QMainWindow):
         self.correct_button.clicked.connect(self.correct_button_pressed)
         self.incorrect_button.clicked.connect(self.incorrect_button_pressed)
         self.show_button.clicked.connect(self.show_button_pressed)
+        self.actionView_Incorrect_Cards.triggered.connect(self.show_incorrect_table)
 
         self.set_card_frame_shadow()
 
@@ -66,6 +69,10 @@ class VocabularyPracticeApp(QMainWindow):
         self.practice_mode = "Practice Vocab"
         self.is_done = False
         self.is_practicing = False
+
+        self.reached_25_percent = False
+        self.reached_50_percent = False
+        self.reached_75_percent = False
 
     def set_card_frame_shadow(self):
         shadow = QGraphicsDropShadowEffect()
@@ -107,6 +114,11 @@ class VocabularyPracticeApp(QMainWindow):
             self.deck_index = 0
             self.is_done = False
             self.is_practicing = True
+
+            self.reached_25_percent = False
+            self.reached_50_percent = False
+            self.reached_75_percent = False
+
             self.display_card()
 
     def exit_pressed(self):
@@ -235,6 +247,21 @@ class VocabularyPracticeApp(QMainWindow):
 
     def set_progress_value(self,value):
         self.progressBar.setValue(value)
+        if value >= 75 and self.reached_75_percent != True:
+            self.progress_ui = ProgressUI()
+            self.progress_ui.setWindowFlag(Qt.FramelessWindowHint)
+            self.progress_ui.show_75_percent()
+            self.reached_75_percent = True
+        elif value >= 50 and self.reached_50_percent != True:
+            self.progress_ui = ProgressUI()
+            self.progress_ui.setWindowFlag(Qt.FramelessWindowHint)
+            self.progress_ui.show_50_percent()
+            self.reached_50_percent = True
+        elif value >= 25 and self.reached_25_percent != True:
+            self.progress_ui = ProgressUI()
+            self.progress_ui.setWindowFlag(Qt.FramelessWindowHint)
+            self.progress_ui.show_25_percent()
+            self.reached_25_percent = True
             
     def set_show_button_text(self):
         if self.show_button_toggle:
@@ -251,6 +278,9 @@ class VocabularyPracticeApp(QMainWindow):
         elif self.is_done == True:
             self.generate_msg("No more cards in deck...",0)
         else:
+            self.progress_ui = ProgressUI()
+            self.progress_ui.setWindowFlag(Qt.FramelessWindowHint)
+            self.progress_ui.show_100_percent()
             self.create_log()
             self.is_done = True
             self.is_practicing = False
@@ -272,6 +302,9 @@ class VocabularyPracticeApp(QMainWindow):
         elif self.is_done == True:
             self.generate_msg("No more cards in deck...",0)
         else:
+            self.progress_ui = ProgressUI()
+            self.progress_ui.setWindowFlag(Qt.FramelessWindowHint)
+            self.progress_ui.show_100_percent()
             self.json_logger.add_index_to_dictionary(self.card.index)
             self.create_log()
             self.is_done = True
@@ -345,6 +378,21 @@ class VocabularyPracticeApp(QMainWindow):
     def remove_card_indexes_from_dictionary(self):
         for card in range(0,self.deck_index):
             self.json_logger.remove_index_in_dictionary(self.vocab_deck[card].index)
+
+    def show_incorrect_table(self):
+        if self.deck_factory.vocab_df.empty:
+            self.disable_buttons()
+            self.generate_msg("You did not add a spreadsheet...",1)
+        elif len(self.deck_factory.vocab_df) == 0:
+                self.disable_buttons()
+                self.generate_msg("Spreadsheet appears to be empty...",1)
+        else:
+            self.table_interface = IncorrectTableUI(self)
+            self.table_interface.setWindowTitle('Table')
+            self.table_interface.show()
+            self.table_interface.resize_table(self.json_logger.grab_today_incorrect_indexes())
+            self.table_interface.populate_table(self.json_logger.grab_today_incorrect_indexes())
+
 
 def main():
     app = QApplication([])

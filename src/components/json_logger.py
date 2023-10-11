@@ -181,3 +181,51 @@ class JSONLogger():
                 if day in file_data:
                     indexes = file_data[day]["incorrect terms"]
                     return indexes
+                
+    def grab_week_incorrect_indexes(self):
+        date_array = [0]*7
+        day_number = date.today().weekday()
+        current_date = date.today()
+        #Subtract days to get to date on a Monday
+        current_date -= timedelta(days=day_number)
+        accumulate_incorrect_dictionary = {}
+        for weekday_index in range(7):
+            stats,labels,success = self.grab_stats_from_date(current_date)
+            if success:
+                for index,frequency in stats[4].items():
+                    if index in accumulate_incorrect_dictionary.keys():
+                        accumulate_incorrect_dictionary[index] += frequency
+                    else:
+                        accumulate_incorrect_dictionary[index] = frequency
+            current_date += timedelta(days=1)
+
+        return accumulate_incorrect_dictionary
+        
+    def get_current_year(self):
+        return date.today().strftime("%Y")
+    
+    def get_current_month(self):
+        return date.today().strftime("%m")
+        
+    def grab_stats_from_date(self,check_date):
+        month_year = check_date.strftime("%m-%y")
+        log_dir = self.log_path + "\{}".format(check_date.year) + '\{}.json'.format(month_year)
+        if os.path.exists(log_dir):
+            with open(log_dir,'r+') as file:
+                file_data = json.load(file)
+                date_str = check_date.strftime("%m-%d-%y")
+                if date_str in file_data:
+                    correct_stat = file_data[date_str]['correct']
+                    incorrect_stat = file_data[date_str]['incorrect']
+                    practice_amount_stat = file_data[date_str]['practice amount']
+                    streak_stat = file_data[date_str]['streak']
+                    incorrect_terms_stat = file_data[date_str]['incorrect terms']
+            
+                    stats = [correct_stat,incorrect_stat,practice_amount_stat, streak_stat,incorrect_terms_stat]
+                    labels = ['Correct','Incorrect','Practice Amount','Streak','Incorrect Terms']
+                else:
+                    return [],[],False
+            return stats,labels,True
+        else:
+            return [],[],False
+

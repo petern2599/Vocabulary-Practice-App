@@ -9,6 +9,7 @@ from components.progression_chart import ProgressionChart
 from components.progress_interface import ProgressUI
 from components.incorrect_table import IncorrectTableUI
 from datetime import date,timedelta
+from collections import OrderedDict
 
 class VocabularyPracticeApp(QMainWindow):
     def __init__(self):
@@ -17,9 +18,9 @@ class VocabularyPracticeApp(QMainWindow):
         self.show()
         self.ui_setup()
         self.deck_factory = DeckFactory()
+        self.json_logger = JSONLogger()
         self.progress_charts = ProgressionChart(self)
         self.set_default_settings()
-        self.json_logger = JSONLogger()
 
         streak_date = date.today()
         streak_amount_today = self.check_streak(streak_date)
@@ -57,7 +58,6 @@ class VocabularyPracticeApp(QMainWindow):
         self.correct_button.clicked.connect(self.correct_button_pressed)
         self.incorrect_button.clicked.connect(self.incorrect_button_pressed)
         self.show_button.clicked.connect(self.show_button_pressed)
-        self.actionView_Incorrect_Cards.triggered.connect(self.show_incorrect_table)
 
         self.set_card_frame_shadow()
 
@@ -164,6 +164,7 @@ class VocabularyPracticeApp(QMainWindow):
                     self.incorrect -= 1
                 else:
                     self.incorrect = 0
+                self.json_logger.remove_index_in_dictionary(self.card.index)
             self.display_card()
         else:
             self.disable_buttons()
@@ -192,13 +193,17 @@ class VocabularyPracticeApp(QMainWindow):
             self.generate_msg("Finish current practice before setting amount...",1)
 
     def today_stats_pressed(self):
-        self.progress_charts.generate_today_stats()
+        success = self.progress_charts.generate_today_stats()
+        if success:
+            self.show_today_incorrect_table()
 
     def week_stats_bar_pressed(self):
         self.progress_charts.generate_week_stats(False)
+        self.show_week_incorrect_table()
 
     def week_stats_percent_pressed(self):
         self.progress_charts.generate_week_stats(True)
+        self.show_week_incorrect_table()
 
     def weekly_stats_bar_pressed(self):
         self.progress_charts.generate_weekly_stats(False)
@@ -379,21 +384,43 @@ class VocabularyPracticeApp(QMainWindow):
         for card in range(0,self.deck_index):
             self.json_logger.remove_index_in_dictionary(self.vocab_deck[card].index)
 
-    def show_incorrect_table(self):
+    def show_today_incorrect_table(self):
         if self.deck_factory.vocab_df.empty:
-            self.disable_buttons()
             self.generate_msg("You did not add a spreadsheet...",1)
         elif len(self.deck_factory.vocab_df) == 0:
-                self.disable_buttons()
                 self.generate_msg("Spreadsheet appears to be empty...",1)
         else:
             self.table_interface = IncorrectTableUI(self)
             self.table_interface.setWindowTitle('Table')
             self.table_interface.show()
-            self.table_interface.resize_table(self.json_logger.grab_today_incorrect_indexes())
-            self.table_interface.populate_table(self.json_logger.grab_today_incorrect_indexes())
+            incorrect_indexes = self.json_logger.grab_today_incorrect_indexes()
+            incorrect_indexes = sorted(incorrect_indexes.items(), key=lambda x: x[1])
+            self.table_interface.resize_table(incorrect_indexes)
+            self.table_interface.populate_table(incorrect_indexes)
+    
+    def show_week_incorrect_table(self):
+        if self.deck_factory.vocab_df.empty:
+            self.generate_msg("You did not add a spreadsheet...",1)
+        elif len(self.deck_factory.vocab_df) == 0:
+                self.generate_msg("Spreadsheet appears to be empty...",1)
+        else:
+            self.table_interface = IncorrectTableUI(self)
+            self.table_interface.setWindowTitle('Table')
+            self.table_interface.show()
+            incorrect_indexes = self.json_logger.grab_week_incorrect_indexes()
+            incorrect_indexes_sorted = self.sort_dictionary(incorrect_indexes)
+            self.table_interface.resize_table(incorrect_indexes_sorted)
+            self.table_interface.populate_table(incorrect_indexes_sorted)
 
-
+    def sort_dictionary(self,dictionary):
+        dictionary_keys = list(dictionary.keys())
+        for index in range(len(dictionary_keys)):
+            dictionary_keys[index] = int(dictionary_keys[index])
+        dictionary_keys.sort()
+        for index in range(len(dictionary_keys)):
+            dictionary_keys[index] = str(dictionary_keys[index])
+        return {key:dictionary[key] for key in dictionary_keys}
+    
 def main():
     app = QApplication([])
     window = VocabularyPracticeApp()

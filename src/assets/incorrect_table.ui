@@ -70,11 +70,19 @@
            <height>0</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
           <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
+         <property name="sortingEnabled">
+          <bool>false</bool>
          </property>
          <attribute name="horizontalHeaderVisible">
           <bool>true</bool>

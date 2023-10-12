@@ -394,9 +394,9 @@ class VocabularyPracticeApp(QMainWindow):
             self.table_interface.setWindowTitle('Table')
             self.table_interface.show()
             incorrect_indexes = self.json_logger.grab_today_incorrect_indexes()
-            incorrect_indexes = sorted(incorrect_indexes.items(), key=lambda x: x[1])
-            self.table_interface.resize_table(incorrect_indexes)
-            self.table_interface.populate_table(incorrect_indexes)
+            incorrect_indexes_sorted = self.sort_dictionary(incorrect_indexes)
+            self.table_interface.resize_table(incorrect_indexes_sorted)
+            self.table_interface.populate_table(incorrect_indexes_sorted)
     
     def show_week_incorrect_table(self):
         if self.deck_factory.vocab_df.empty:

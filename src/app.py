@@ -410,6 +410,7 @@ class VocabularyPracticeApp(QMainWindow):
             self.table_interface = IncorrectTableUI(self)
             self.table_interface.setWindowTitle('Table')
             self.table_interface.show()
+            self.table_interface.title_label.setText("Week's Incorrect Table")
             incorrect_indexes = self.json_logger.grab_week_incorrect_indexes()
             incorrect_indexes_sorted = self.sort_dictionary(incorrect_indexes)
             self.table_interface.resize_table(incorrect_indexes_sorted)

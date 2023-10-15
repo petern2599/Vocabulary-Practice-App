@@ -12,6 +12,7 @@ class DeckFactory:
     def __init__(self):
         print("DeckFactory has been started...")
         self.amount = None
+        self.review_percentage = None
         self.vocab_df = pandas.DataFrame()
 
     def read_spreadsheet(self,sheet_path):
@@ -49,3 +50,24 @@ class DeckFactory:
     def set_amount(self,amount):
         self.amount = int(amount)
 
+    def create_review_vocab_deck_from_list(self,indexes):
+        if len(indexes) == None:
+            raise AmountNoneException()
+        else:
+            print("Creating vocab deck with {} cards...".format(len(indexes)))
+            deck = []
+            review_amount = int(len(indexes) * (self.review_percentage/100))
+            review_indexes = np.random.choice(np.arange(0,len(indexes)),size=review_amount,replace=False)
+            review_indexes.sort()
+
+            for list_index in range(len(review_indexes)):
+                selected_index = int(indexes[review_indexes[list_index]])
+                vocab = self.get_vocab_from_df(selected_index)
+                spelling = self.get_spelling_from_df(selected_index)
+                translation = self.get_translation_from_df(selected_index)
+                vocab_card = VocabCard(vocab,spelling,translation,list_index)
+                deck.append(vocab_card)
+            return deck
+        
+    def set_review_percentage(self, percentage):
+        self.review_percentage = int(percentage)

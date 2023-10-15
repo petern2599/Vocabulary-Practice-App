@@ -18,7 +18,7 @@ class ProgressionChart:
             fig = plt.figure(num="Today's Stats Progression Chart")
             plt.pie(stats[0:2], labels = labels[0:2], wedgeprops=dict(width=0.5),startangle=90,colors=colors)
             plt.title("Today's Stats",fontweight="bold")
-            plt.text(-0.35,-0.1,"{}%".format(stats[0]/(stats[0]+stats[1])*100),fontsize=24)
+            plt.text(-0.35,-0.1,"{:.1f}%".format(round(stats[0]/(stats[0]+stats[1])*100),2),fontsize=24)
             plt.legend()
             plt.show()
             return success

@@ -58,6 +58,8 @@ class VocabularyPracticeApp(QMainWindow):
         self.correct_button.clicked.connect(self.correct_button_pressed)
         self.incorrect_button.clicked.connect(self.incorrect_button_pressed)
         self.show_button.clicked.connect(self.show_button_pressed)
+        self.actionSet_Review_Percent.triggered.connect(self.set_review_percent_pressed)
+        self.actionStart_Review.triggered.connect(self.start_review_pressed)
 
         self.set_card_frame_shadow()
 
@@ -69,6 +71,7 @@ class VocabularyPracticeApp(QMainWindow):
         self.practice_mode = "Practice Vocab"
         self.is_done = False
         self.is_practicing = False
+        self.deck_factory.set_review_percentage(10)
 
         self.reached_25_percent = False
         self.reached_50_percent = False
@@ -421,6 +424,45 @@ class VocabularyPracticeApp(QMainWindow):
             dictionary_keys[index] = str(dictionary_keys[index])
         return {key:dictionary[key] for key in dictionary_keys}
     
+    def start_review_pressed(self):
+        if self.deck_factory.vocab_df.empty:
+            self.disable_buttons()
+            self.generate_msg("You did not add a spreadsheet...",1)
+        elif len(self.deck_factory.vocab_df) == 0:
+                self.disable_buttons()
+                self.generate_msg("Spreadsheet appears to be empty...",1)
+        else:
+            self.enable_buttons()
+            incorrect_indexes = self.json_logger.grab_week_incorrect_indexes()
+            incorrect_indexes_sorted = self.sort_dictionary(incorrect_indexes)
+            incorrect_indexes_list = list(incorrect_indexes_sorted)
+
+            self.vocab_deck = self.deck_factory.create_review_vocab_deck_from_list(incorrect_indexes_list)
+            self.deck_length = len(self.vocab_deck)
+            self.counter = 0
+            self.correct = 0
+            self.incorrect = 0
+            self.deck_index = 0
+            self.is_done = False
+            self.is_practicing = True
+
+            self.reached_25_percent = False
+            self.reached_50_percent = False
+            self.reached_75_percent = False
+
+            self.display_card()
+
+    def set_review_percent_pressed(self,amount):
+        if self.is_practicing == False:
+            amount,ok = QInputDialog.getText(self, 'Set Review Percentage', 'Type the percentage amount to review incorrect cards (10-100):')
+            if ok and int(amount) > 10:
+                self.deck_factory.set_review_percentage(amount)
+            elif int(amount) < 10:
+                self.generate_msg("Please set amount greater than or equal to 10",1)
+        else:
+            self.generate_msg("Finish current practice before setting amount...",1)
+
+
 def main():
     app = QApplication([])
     window = VocabularyPracticeApp()

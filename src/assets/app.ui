@@ -742,6 +742,7 @@ QPushButton:pressed{
     <addaction name="actionUndo"/>
     <addaction name="separator"/>
     <addaction name="menuView_Progress_Charts"/>
+    <addaction name="actionStart_Review"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
@@ -749,6 +750,7 @@ QPushButton:pressed{
     </property>
     <addaction name="actionSet_Amount"/>
     <addaction name="actionSet_Mode"/>
+    <addaction name="actionSet_Review_Percent"/>
    </widget>
    <addaction name="menuActions"/>
    <addaction name="menuSettings"/>
@@ -816,6 +818,16 @@ QPushButton:pressed{
   <action name="actionView_Incorrect_Cards">
    <property name="text">
     <string>View Incorrect Cards</string>
+   </property>
+  </action>
+  <action name="actionSet_Review_Percent">
+   <property name="text">
+    <string>Set Review Percent</string>
+   </property>
+  </action>
+  <action name="actionStart_Review">
+   <property name="text">
+    <string>Start Review</string>
    </property>
   </action>
  </widget>

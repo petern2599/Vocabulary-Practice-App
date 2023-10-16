@@ -181,6 +181,9 @@ class VocabularyPracticeApp(QMainWindow):
             amount,ok = QInputDialog.getText(self, 'Set Amount', 'Type number of vocab cards to generate for deck:')
             if ok and int(amount) > 10:
                 self.deck_factory.set_amount(amount)
+            elif ok == False:
+                self.generate_msg("You did not set an amount, setting amount to default (10)",1)
+                self.deck_factory.set_amount(10)
             elif int(amount) < 10:
                 self.generate_msg("Please set amount greater than or equal to 10",1)
         else:
@@ -456,8 +459,11 @@ class VocabularyPracticeApp(QMainWindow):
     def set_review_percent_pressed(self,amount):
         if self.is_practicing == False:
             amount,ok = QInputDialog.getText(self, 'Set Review Percentage', 'Type the percentage amount to review incorrect cards (10-100):')
-            if ok and int(amount) > 10:
+            if ok and int(amount) >= 10:
                 self.deck_factory.set_review_percentage(amount)
+            elif ok == False:
+                self.generate_msg("You did not set an amount, setting amount to default (10%)",1)
+                self.deck_factory.set_review_percentage(10)
             elif int(amount) < 10:
                 self.generate_msg("Please set amount greater than or equal to 10",1)
         else:

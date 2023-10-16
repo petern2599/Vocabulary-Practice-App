@@ -65,7 +65,7 @@ class DeckFactory:
                 vocab = self.get_vocab_from_df(selected_index)
                 spelling = self.get_spelling_from_df(selected_index)
                 translation = self.get_translation_from_df(selected_index)
-                vocab_card = VocabCard(vocab,spelling,translation,list_index)
+                vocab_card = VocabCard(vocab,spelling,translation,selected_index)
                 deck.append(vocab_card)
             return deck
         

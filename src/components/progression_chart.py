@@ -7,21 +7,24 @@ import numpy as np
 class ProgressionChart:
     def __init__(self,main_app):
         self.main_app = main_app
+        self.json_logger = self.main_app.json_logger
         current_dir = os.getcwd()
         self.log_path = current_dir + "\log"
         
     def generate_today_stats(self):
-        stats,labels,success = self.grab_stats_from_date(date.today())
+        stats,labels,success = self.json_logger.grab_stats_from_date(date.today())
         if success:
             colors = ['limegreen','red']
             fig = plt.figure(num="Today's Stats Progression Chart")
             plt.pie(stats[0:2], labels = labels[0:2], wedgeprops=dict(width=0.5),startangle=90,colors=colors)
             plt.title("Today's Stats",fontweight="bold")
-            plt.text(-0.35,-0.1,"{}%".format(stats[0]/(stats[0]+stats[1])*100),fontsize=24)
+            plt.text(-0.35,-0.1,"{:.1f}%".format(round(stats[0]/(stats[0]+stats[1])*100),2),fontsize=24)
             plt.legend()
             plt.show()
+            return success
         else:
             self.main_app.generate_msg("Today's log entry does not exist...",1)
+            return success
 
     def generate_week_stats(self, as_percent):
         correct_stats_array = [0]*7
@@ -35,7 +38,7 @@ class ProgressionChart:
         current_date -= timedelta(days=day_number)
             
         for weekday_index in range(len(correct_stats_array)):
-            stats,labels,success = self.grab_stats_from_date(current_date)
+            stats,labels,success = self.json_logger.grab_stats_from_date(current_date)
             if success:
                 correct_stats_array[weekday_index] = stats[0]
                 incorrect_stats_array[weekday_index] = stats[1]
@@ -189,6 +192,8 @@ class ProgressionChart:
     def get_weekly_stats(self):
         current_month = int(self.get_current_month())
         next_month = current_month + 1
+        if next_month == 13:
+            next_month = 1
         if current_month == 12 and next_month == 1:
             current_year = int(self.get_current_year())
             other_year = current_year + 1
@@ -204,7 +209,7 @@ class ProgressionChart:
         for day in range(1,number_of_days+1):
             current_date = date(current_year,current_month,day)
             day_number = current_date.weekday()
-            stats,labels,success = self.grab_stats_from_date(current_date)
+            stats,labels,success = self.json_logger.grab_stats_from_date(current_date)
             if success:
                 week_stats.append((stats[0],stats[1],stats[2]))
             else:
@@ -246,25 +251,6 @@ class ProgressionChart:
     def get_today_date(self):
         return date.today().strftime("%m-%d-%y")
     
-    def grab_stats_from_date(self,check_date):
-        month_year = check_date.strftime("%m-%y")
-        log_dir = self.log_path + "\{}".format(check_date.year) + '\{}.json'.format(month_year)
-        if os.path.exists(log_dir):
-            with open(log_dir,'r+') as file:
-                file_data = json.load(file)
-                date_str = check_date.strftime("%m-%d-%y")
-                if date_str in file_data:
-                    correct_stat = file_data[date_str]['correct']
-                    incorrect_stat = file_data[date_str]['incorrect']
-                    practice_amount_stat = file_data[date_str]['practice amount']
-            
-                    stats = [correct_stat,incorrect_stat,practice_amount_stat]
-                    labels = ['Correct','Incorrect','practice_amount_stat']
-                else:
-                    return [],[],False
-            return stats,labels,True
-        else:
-            return [],[],False
 
 if __name__ == "__main__":
     pc = ProgressionChart("hi")

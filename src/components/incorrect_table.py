@@ -52,6 +52,8 @@ class IncorrectTableUI(QMainWindow):
         self.incorrect_table_widget.setItem(row,3,QTableWidgetItem(translation))
         self.incorrect_table_widget.setItem(row,4,QTableWidgetItem(str(frequency)))
 
+    def set_count_label(self,amount):
+        self.count_label.setText(str(amount))
 
 def main():
     app = QApplication([])

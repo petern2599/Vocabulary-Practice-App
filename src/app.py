@@ -401,6 +401,7 @@ class VocabularyPracticeApp(QMainWindow):
             self.table_interface.show()
             incorrect_indexes = self.json_logger.grab_today_incorrect_indexes()
             incorrect_indexes_sorted = self.sort_dictionary(incorrect_indexes)
+            self.table_interface.set_count_label(len(incorrect_indexes_sorted))
             self.table_interface.resize_table(incorrect_indexes_sorted)
             self.table_interface.populate_table(incorrect_indexes_sorted)
     
@@ -416,6 +417,7 @@ class VocabularyPracticeApp(QMainWindow):
             self.table_interface.title_label.setText("Week's Incorrect Table")
             incorrect_indexes = self.json_logger.grab_week_incorrect_indexes()
             incorrect_indexes_sorted = self.sort_dictionary(incorrect_indexes)
+            self.table_interface.set_count_label(len(incorrect_indexes_sorted))
             self.table_interface.resize_table(incorrect_indexes_sorted)
             self.table_interface.populate_table(incorrect_indexes_sorted)
 

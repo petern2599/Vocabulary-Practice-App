@@ -46,6 +46,21 @@ class DeckFactory:
                 vocab_card = VocabCard(vocab,spelling,translation,index)
                 deck.append(vocab_card)
             return deck
+        
+    def create_sub_deck(self,amount):
+        if amount == None:
+            raise AmountNoneException()
+        else:
+            print("Creating sub deck with {} cards...".format(amount))
+            indexes = self.get_random_indexes(amount)
+            deck = []
+            for index in indexes:
+                vocab = self.get_vocab_from_df(index)
+                spelling = self.get_spelling_from_df(index)
+                translation = self.get_translation_from_df(index)
+                vocab_card = VocabCard(vocab,spelling,translation,index)
+                deck.append(vocab_card)
+            return deck
 
     def set_amount(self,amount):
         self.amount = int(amount)
@@ -53,10 +68,14 @@ class DeckFactory:
     def create_review_vocab_deck_from_list(self,indexes):
         if len(indexes) == None:
             raise AmountNoneException()
+        elif len(indexes) == 0:
+            return []
         else:
             print("Creating vocab deck with {} cards...".format(len(indexes)))
             deck = []
             review_amount = int(len(indexes) * (self.review_percentage/100))
+            if review_amount == 0:
+                review_amount = len(indexes)
             review_indexes = np.random.choice(np.arange(0,len(indexes)),size=review_amount,replace=False)
             review_indexes.sort()
 

@@ -13,7 +13,7 @@ class ProgressionChart:
         
     def generate_today_stats(self):
         stats,labels,success = self.json_logger.grab_stats_from_date(date.today())
-        if success:
+        if success and (stats[0] > 0 or stats[1] > 0):
             colors = ['limegreen','red']
             fig = plt.figure(num="Today's Stats Progression Chart")
             plt.pie(stats[0:2], labels = labels[0:2], wedgeprops=dict(width=0.5),startangle=90,colors=colors)

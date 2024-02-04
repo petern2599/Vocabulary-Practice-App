@@ -10,17 +10,18 @@ from components.progress_interface import ProgressUI
 from components.incorrect_table import IncorrectTableUI
 from datetime import date,timedelta
 from collections import OrderedDict
+import random
 
 class VocabularyPracticeApp(QMainWindow):
     def __init__(self):
         super(VocabularyPracticeApp,self).__init__()
         uic.loadUi("src/assets/app.ui",self)
         self.show()
-        self.ui_setup()
         self.deck_factory = DeckFactory()
         self.json_logger = JSONLogger()
         self.progress_charts = ProgressionChart(self)
         self.set_default_settings()
+        self.ui_setup()
 
         streak_date = date.today()
         streak_amount_today = self.check_streak(streak_date)
@@ -60,6 +61,8 @@ class VocabularyPracticeApp(QMainWindow):
         self.show_button.clicked.connect(self.show_button_pressed)
         self.actionSet_Review_Percent.triggered.connect(self.set_review_percent_pressed)
         self.actionStart_Review.triggered.connect(self.start_review_pressed)
+        self.actionSet_Practice_Type.triggered.connect(self.set_practice_type_pressed)
+        self.enter_button.clicked.connect(self.enter_pressed)
 
         self.set_card_frame_shadow()
 
@@ -69,6 +72,7 @@ class VocabularyPracticeApp(QMainWindow):
     def set_default_settings(self):
         self.deck_factory.set_amount(10)
         self.practice_mode = "Practice Vocab"
+        self.practice_type = "Writing"
         self.is_done = False
         self.is_practicing = False
         self.deck_factory.set_review_percentage(10)
@@ -80,7 +84,10 @@ class VocabularyPracticeApp(QMainWindow):
     def set_card_frame_shadow(self):
         shadow = QGraphicsDropShadowEffect()
         shadow.setBlurRadius(50)
-        self.card_frame.setGraphicsEffect(shadow)
+        if self.practice_type == "Writing":
+            self.card_frame.setGraphicsEffect(shadow)
+        elif self.practice_type == "Matching":
+            self.card_frame2.setGraphicsEffect(shadow)
 
     def add_spreadsheet_pressed(self):
         try:
@@ -94,11 +101,13 @@ class VocabularyPracticeApp(QMainWindow):
         self.show_button.setEnabled(False)
         self.correct_button.setEnabled(False)
         self.incorrect_button.setEnabled(False)
+        self.enter_button.setEnabled(False)
 
     def enable_buttons(self):
         self.show_button.setEnabled(True)
         self.correct_button.setEnabled(True)
         self.incorrect_button.setEnabled(True)
+        self.enter_button.setEnabled(True)
 
     def start_pressed(self):
         if self.deck_factory.vocab_df.empty:
@@ -108,7 +117,6 @@ class VocabularyPracticeApp(QMainWindow):
                 self.disable_buttons()
                 self.generate_msg("Spreadsheet appears to be empty...",1)
         else:
-            self.enable_buttons()
             self.vocab_deck = self.deck_factory.create_vocab_deck()
             self.deck_length = len(self.vocab_deck)
             self.counter = 0
@@ -124,14 +132,33 @@ class VocabularyPracticeApp(QMainWindow):
 
             self.display_card()
 
+            if self.practice_type == "Writing":
+                self.enable_buttons()
+            elif self.practice_type == "Matching":
+                self.enable_buttons()
+                self.word_bank_list.clear()
+                self.answer_list.clear()
+                self.populate_word_bank()
+
     def exit_pressed(self):
         self.disable_buttons()
         if hasattr(self, 'deck_index'):
-            self.remove_card_indexes_from_dictionary()
-            self.set_main_text("Practice has ended")
-            self.set_sub_text("Please press start to begin again...")
+            self.create_log()
+            self.generate_msg("Ending practice, logging stats...",0)
+            if self.correct > 0 or self.incorrect > 0:
+                today = date.today()
+                streak_amount = self.check_streak(today)
+                self.set_streak(streak_amount)
+            
+            # self.remove_card_indexes_from_dictionary()
+            if self.practice_type == "Writing":
+                self.set_main_text("Practice has ended")
+                self.set_sub_text("Please press start to begin again...")
+            elif self.practice_type == "Matching":
+                self.set_main_text("Practice has ended")
         else:
             self.generate_msg("Can't exit practice since it hasn't started yet...",1)
+
         self.is_done = True
         self.is_practicing = False
 
@@ -168,7 +195,13 @@ class VocabularyPracticeApp(QMainWindow):
                 else:
                     self.incorrect = 0
                 self.json_logger.remove_index_in_dictionary(self.card.index)
-            self.display_card()
+            if self.practice_type == "Writing":
+                self.display_card()
+            elif self.practice_type == "Matching":
+                self.display_card()
+                self.word_bank_list.clear()
+                self.answer_list.clear()
+                self.populate_word_bank()
         else:
             self.disable_buttons()
             self.generate_msg("You have already completed this practice run, please press start again if you want to practice more...",0)
@@ -198,6 +231,113 @@ class VocabularyPracticeApp(QMainWindow):
         else:
             self.generate_msg("Finish current practice before setting amount...",1)
 
+    def set_practice_type_pressed(self):
+        if self.is_practicing == False:
+            practice_type = ("Writing", "Matching")
+            practice_type,ok = QInputDialog.getItem(self, 'Set Practice Type', 'Select Practice Type:',practice_type,0,False)
+            if ok and practice_type:
+                self.practice_type = practice_type
+                self.switch_stacked_widget_page()
+        else:
+            self.generate_msg("Finish current practice before setting amount...",1)
+
+    def switch_stacked_widget_page(self):
+        if self.practice_type == "Writing":
+            self.stacked_widget.setCurrentIndex(0)
+        elif self.practice_type == "Matching":
+            self.stacked_widget.setCurrentIndex(1)
+
+    def populate_word_bank(self):
+        extra_word_amount = 6
+        sub_deck = self.deck_factory.create_sub_deck(extra_word_amount)
+        for card_index in range(len(sub_deck)):
+            result = True
+            while result:
+                result = self.check_matching_card(sub_deck[card_index])
+                if result:
+                    new_card = self.deck_factory.create_sub_deck(1)[0]
+                    sub_deck[card_index] = new_card
+
+        sub_deck.append(self.card)
+        random.shuffle(sub_deck)
+
+        for card in sub_deck:
+            if self.practice_mode == "Practice Vocab":
+                listWidgetItem = QListWidgetItem(" " + card.translation + " ")
+                self.word_bank_list.addItem(listWidgetItem)
+            elif self.practice_mode == "Practice Translation":
+                listWidgetItem = QListWidgetItem(" " + card.vocab + " ")
+                listWidgetItem.setToolTip(card.spelling)
+                self.word_bank_list.addItem(listWidgetItem)
+        
+    def check_matching_card(self,sub_card):
+        for vocab_card in self.vocab_deck:
+            if self.practice_mode == "Practice Vocab":
+                if sub_card.vocab == " " + vocab_card.vocab + " ":
+                    return True
+            elif self.practice_mode == "Practice Translation":
+                if sub_card.translation == " " + vocab_card.translation + " ":
+                    return True
+        return False
+
+    def check_answer(self):
+        self.answer_list.setCurrentRow(0)
+        answer = self.answer_list.currentItem()
+        if self.practice_mode == "Practice Vocab":
+            if answer.text() == " " + self.card.translation + " ":
+                self.generate_msg("Correct",0)
+                return True
+            else:
+                self.generate_msg("Incorrect, Answer: {}".format(self.card.translation),0)
+                return False
+        elif self.practice_mode == "Practice Translation":
+            if answer.text() == " " + self.card.vocab + " ":
+                self.generate_msg("Correct",0)
+                return True
+            else:
+                self.generate_msg("Incorrect, Answer: {}".format(self.card.vocab),0)
+                return False
+            
+    def enter_pressed(self):
+        if self.answer_list.count() > 1:
+            self.generate_msg("Please only drop one item into answer list",1)
+        elif self.answer_list.count() == 0:
+            self.generate_msg("Please drag and drop an item from the Word Bank.",0)
+        else:
+            result = self.check_answer()
+            if result:
+                self.correct += 1
+                self.card.set_correct()
+                self.deck_index += 1
+            else:
+                self.incorrect += 1
+                self.card.set_incorrect()
+                self.deck_index += 1
+                if self.deck_index < len(self.vocab_deck) and self.is_done == False:
+                    self.json_logger.add_index_to_dictionary(self.card.index)
+
+            if self.deck_index < len(self.vocab_deck) and self.is_done == False:
+                self.display_card()
+                self.word_bank_list.clear()
+                self.answer_list.clear()
+                self.populate_word_bank()
+            elif self.is_done == True:
+                self.generate_msg("No more cards in deck...",0)
+            else:
+                self.progress_ui = ProgressUI()
+                self.progress_ui.setWindowFlag(Qt.FramelessWindowHint)
+                self.progress_ui.show_100_percent()
+                self.create_log()
+                self.is_done = True
+                self.is_practicing = False
+                self.generate_msg("No more cards in deck, logging stats...",0)
+                today = date.today()
+                streak_amount = self.check_streak(today)
+                self.set_streak(streak_amount)
+                self.disable_buttons()
+                self.set_main_text("Practice is finished")
+                self.set_sub_text("Please press start to begin again...")
+
     def today_stats_pressed(self):
         success = self.progress_charts.generate_today_stats()
         if success:
@@ -220,24 +360,36 @@ class VocabularyPracticeApp(QMainWindow):
     def display_card(self):
         self.card = self.vocab_deck[self.deck_index]
         self.counter += 1
+        if self.practice_type == "Writing":
+            if self.practice_mode == "Practice Vocab":
+                self.show_button_toggle = 0
+                self.set_show_button_text()
 
-        if self.practice_mode == "Practice Vocab":
-            self.show_button_toggle = 0
-            self.set_show_button_text()
+                self.set_main_text(self.card.vocab)
+                self.set_sub_text(self.card.spelling)
+                self.set_counter_text("({} out of {} vocabs)".format(self.counter,self.deck_length))
+                self.set_progress_value(int((self.counter/self.deck_length)*100))
+                
+            elif self.practice_mode == "Practice Translation":
+                self.show_button_toggle = 1
+                self.set_show_button_text()
 
-            self.set_main_text(self.card.vocab)
-            self.set_sub_text(self.card.spelling)
-            self.set_counter_text("({} out of {} vocabs)".format(self.counter,self.deck_length))
-            self.set_progress_value(int((self.counter/self.deck_length)*100))
+                self.set_main_text(self.card.translation)
+                self.set_sub_text("")
+                self.set_counter_text("({} out of {} vocabs)".format(self.counter,self.deck_length))
+                self.set_progress_value(int((self.counter/self.deck_length)*100))
+
+        elif self.practice_type == "Matching":
+            if self.practice_mode == "Practice Vocab":
+                self.set_main_text(self.card.vocab)
+                self.set_counter_text("({} out of {} vocabs)".format(self.counter,self.deck_length))
+                self.set_progress_value(int((self.counter/self.deck_length)*100))
             
-        elif self.practice_mode == "Practice Translation":
-            self.show_button_toggle = 1
-            self.set_show_button_text()
-
-            self.set_main_text(self.card.translation)
-            self.set_sub_text("")
-            self.set_counter_text("({} out of {} vocabs)".format(self.counter,self.deck_length))
-            self.set_progress_value(int((self.counter/self.deck_length)*100))
+            elif self.practice_mode == "Practice Translation":
+                self.set_main_text(self.card.translation)
+                self.set_sub_text("")
+                self.set_counter_text("({} out of {} vocabs)".format(self.counter,self.deck_length))
+                self.set_progress_value(int((self.counter/self.deck_length)*100))
 
     def switch_display_card(self):
         if self.show_button_toggle == 0:
@@ -248,7 +400,10 @@ class VocabularyPracticeApp(QMainWindow):
             self.set_sub_text("")
 
     def set_main_text(self,text):
-        self.main_text_label.setText(text)
+        if self.practice_type == "Writing":
+            self.main_text_label.setText(text)
+        elif self.practice_type == "Matching":
+            self.main_text_label2.setText(text)
 
     def set_sub_text(self,text):
         self.sub_text_label.setText(text)
@@ -339,7 +494,10 @@ class VocabularyPracticeApp(QMainWindow):
             self.switch_display_card()
 
     def create_log(self):
-        self.json_logger.append_daily_stats(self.correct,self.incorrect)
+        if self.correct > 0 or self.incorrect > 0:
+            self.json_logger.append_daily_stats(self.correct,self.incorrect)
+        else:
+            self.generate_msg("No data is available to log. Cancelling logging process.",1)
 
     def generate_msg(self,msg,is_error):
         message = QMessageBox()
@@ -444,19 +602,23 @@ class VocabularyPracticeApp(QMainWindow):
             incorrect_indexes_list = list(incorrect_indexes_sorted)
 
             self.vocab_deck = self.deck_factory.create_review_vocab_deck_from_list(incorrect_indexes_list)
-            self.deck_length = len(self.vocab_deck)
-            self.counter = 0
-            self.correct = 0
-            self.incorrect = 0
-            self.deck_index = 0
-            self.is_done = False
-            self.is_practicing = True
+            if len(self.vocab_deck) != 0:
+                self.deck_length = len(self.vocab_deck)
+                self.counter = 0
+                self.correct = 0
+                self.incorrect = 0
+                self.deck_index = 0
+                self.is_done = False
+                self.is_practicing = True
 
-            self.reached_25_percent = False
-            self.reached_50_percent = False
-            self.reached_75_percent = False
+                self.reached_25_percent = False
+                self.reached_50_percent = False
+                self.reached_75_percent = False
 
-            self.display_card()
+                self.display_card()
+            else:
+                self.disable_buttons()
+                self.generate_msg("There are no terms to review...",0)
 
     def set_review_percent_pressed(self,amount):
         if self.is_practicing == False:
